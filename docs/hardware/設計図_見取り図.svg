@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980">
+  <defs>
+    <style>
+      .bg { fill: #f7f3ea; }
+      .case { fill: #262626; stroke: #111; stroke-width: 5; }
+      .module { fill: #ffffff; stroke: #222; stroke-width: 3; }
+      .analog { stroke: #1f9d55; stroke-width: 6; fill: none; marker-end: url(#arrowGreen); }
+      .digital { stroke: #1f6feb; stroke-width: 5; fill: none; marker-end: url(#arrowBlue); }
+      .power9 { stroke: #d12b2b; stroke-width: 6; fill: none; marker-end: url(#arrowRed); }
+      .power5 { stroke: #f08c00; stroke-width: 5; fill: none; marker-end: url(#arrowOrange); }
+      .power33 { stroke: #d63384; stroke-width: 5; fill: none; marker-end: url(#arrowPink); }
+      .gnd { stroke: #111; stroke-width: 4; fill: none; }
+      .vgnd { stroke: #7b2cbf; stroke-width: 5; fill: none; marker-end: url(#arrowPurple); }
+      .control { stroke: #777; stroke-width: 4; fill: none; marker-end: url(#arrowGray); stroke-dasharray: 8 8; }
+      .title { font: 800 36px system-ui, sans-serif; fill: #111; }
+      .subtitle { font: 600 20px system-ui, sans-serif; fill: #333; }
+      .label { font: 700 22px system-ui, sans-serif; fill: #111; }
+      .small { font: 600 16px system-ui, sans-serif; fill: #333; }
+      .pin { font: 700 15px ui-monospace, monospace; fill: #111; }
+      .white { fill: #f7f3ea; }
+      .note { fill: #fff7d6; stroke: #d6a400; stroke-width: 2; }
+    </style>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f9d55"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6feb"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d12b2b"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f08c00"/>
+    </marker>
+    <marker id="arrowPink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d63384"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7b2cbf"/>
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#777"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1400" height="980"/>
+  <text x="48" y="58" class="title">MEFX-S3 マルチエフェクター 設計図 v1</text>
+  <text x="50" y="92" class="subtitle">机上試作用: モノラル入力 / モノラル出力 / PCM1808右chはマイク監視</text>
+
+  <rect x="70" y="130" width="1260" height="700" rx="30" class="case"/>
+  <text x="95" y="170" class="label white">本体ケース内の見取り図</text>
+
+  <rect x="110" y="265" width="120" height="90" rx="14" class="module"/>
+  <text x="130" y="303" class="label">INPUT</text>
+  <text x="130" y="330" class="small">6.35mm</text>
+
+  <rect x="280" y="235" width="180" height="150" rx="14" class="module"/>
+  <text x="305" y="275" class="label">TL072 A</text>
+  <text x="305" y="305" class="small">入力バッファ</text>
+  <text x="305" y="330" class="pin">pin3 IN+</text>
+  <text x="305" y="352" class="pin">pin1 OUT</text>
+
+  <rect x="520" y="230" width="190" height="165" rx="14" class="module"/>
+  <text x="545" y="270" class="label">PCM1808</text>
+  <text x="545" y="300" class="small">ADC</text>
+  <text x="545" y="326" class="pin">LIN: 楽器</text>
+  <text x="545" y="348" class="pin">RIN: マイク</text>
+  <text x="545" y="370" class="pin">DOUT → GPIO6</text>
+
+  <rect x="780" y="220" width="220" height="185" rx="14" class="module"/>
+  <text x="810" y="260" class="label">ESP32-S3</text>
+  <text x="810" y="290" class="small">BLE / DSP / 保存</text>
+  <text x="810" y="318" class="pin">ADC: GPIO4/5/6</text>
+  <text x="810" y="340" class="pin">DAC: GPIO7/15/16</text>
+  <text x="810" y="362" class="pin">SW: GPIO0</text>
+
+  <rect x="1060" y="230" width="190" height="165" rx="14" class="module"/>
+  <text x="1085" y="270" class="label">PCM5102A</text>
+  <text x="1085" y="300" class="small">DAC</text>
+  <text x="1085" y="326" class="pin">DIN ← GPIO16</text>
+  <text x="1085" y="348" class="pin">L-OUT</text>
+  <text x="1085" y="370" class="pin">XMT → 3.3V</text>
+
+  <rect x="1055" y="500" width="190" height="145" rx="14" class="module"/>
+  <text x="1080" y="540" class="label">TL072 B</text>
+  <text x="1080" y="570" class="small">出力バッファ</text>
+  <text x="1080" y="596" class="pin">pin5 IN+</text>
+  <text x="1080" y="618" class="pin">pin7 OUT</text>
+
+  <rect x="1120" y="700" width="120" height="90" rx="14" class="module"/>
+  <text x="1134" y="738" class="label">OUTPUT</text>
+  <text x="1148" y="765" class="small">6.35mm</text>
+
+  <rect x="300" y="565" width="150" height="90" rx="14" class="module"/>
+  <text x="325" y="603" class="label">MIC</text>
+  <text x="320" y="630" class="small">MAX4466等</text>
+
+  <rect x="645" y="645" width="170" height="105" rx="14" class="module"/>
+  <text x="670" y="685" class="label">Foot SW</text>
+  <text x="670" y="715" class="small">短押し/長押し</text>
+
+  <rect x="125" y="500" width="180" height="180" rx="14" class="module"/>
+  <text x="150" y="540" class="label">電源</text>
+  <text x="150" y="570" class="pin">9V DC IN</text>
+  <text x="150" y="595" class="pin">逆接保護</text>
+  <text x="150" y="620" class="pin">5V生成</text>
+  <text x="150" y="645" class="pin">3.3V生成</text>
+
+  <rect x="350" y="710" width="190" height="80" rx="14" class="module"/>
+  <text x="375" y="746" class="label">VGND 4.5V</text>
+  <text x="375" y="770" class="small">TL072音声基準</text>
+
+  <path class="analog" d="M 230 310 C 250 310, 260 310, 280 310"/>
+  <path class="analog" d="M 460 310 C 485 310, 495 310, 520 310"/>
+  <path class="digital" d="M 710 285 C 735 260, 750 250, 780 250"/>
+  <path class="digital" d="M 780 330 C 750 350, 735 360, 710 360"/>
+  <path class="digital" d="M 1000 305 C 1025 305, 1035 305, 1060 305"/>
+  <path class="analog" d="M 1155 395 C 1155 430, 1155 465, 1155 500"/>
+  <path class="analog" d="M 1155 645 C 1170 665, 1180 680, 1180 700"/>
+
+  <path class="analog" d="M 450 610 C 485 560, 505 515, 560 395"/>
+  <path class="control" d="M 730 645 C 770 570, 810 485, 865 405"/>
+
+  <path class="power9" d="M 305 535 C 380 505, 520 475, 790 405"/>
+  <path class="power9" d="M 305 560 C 520 525, 790 510, 1055 550"/>
+  <path class="power5" d="M 305 595 C 510 475, 750 425, 1060 375"/>
+  <path class="power33" d="M 305 625 C 500 520, 680 450, 790 380"/>
+  <path class="power33" d="M 305 640 C 620 600, 900 520, 1190 395"/>
+  <path class="vgnd" d="M 445 710 C 570 650, 830 625, 1055 585"/>
+  <path class="vgnd" d="M 445 720 C 410 610, 380 480, 370 385"/>
+
+  <line class="gnd" x1="110" y1="815" x2="1260" y2="815"/>
+  <text x="560" y="805" class="small white">GND共通レール: ジャック / ESP32 / ADC / DAC / マイク / 電源を全部つなぐ</text>
+
+  <rect x="70" y="860" width="1260" height="85" rx="14" class="note"/>
+  <text x="95" y="895" class="label">作る順番</text>
+  <text x="95" y="925" class="small">1. 電源だけ作る → 9V/5V/3.3V/4.5Vをテスター確認　2. TL072入力 → 3. ADC/DAC/I2S → 4. 出力 → 5. ESP32書き込み</text>
+
+  <rect x="1030" y="130" width="275" height="70" rx="12" fill="#ffffff" stroke="#222" stroke-width="2"/>
+  <text x="1050" y="158" class="small">線色</text>
+  <line x1="1100" y1="154" x2="1160" y2="154" class="analog"/>
+  <text x="1170" y="160" class="small">音声</text>
+  <line x1="1100" y1="178" x2="1160" y2="178" class="digital"/>
+  <text x="1170" y="184" class="small">I2S</text>
+  <line x1="1225" y1="154" x2="1275" y2="154" class="power9"/>
+  <text x="1285" y="160" class="small">9V</text>
+  <line x1="1225" y1="178" x2="1275" y2="178" class="vgnd"/>
+  <text x="1285" y="184" class="small">4.5V</text>
+</svg>

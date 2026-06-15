@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.multi-effecter/preset.schema.json",
+  "title": "Multi Effecter Preset",
+  "type": "object",
+  "required": ["instrument", "name", "effects", "bypass", "createdAt", "source"],
+  "additionalProperties": false,
+  "properties": {
+    "instrument": {
+      "type": "string",
+      "enum": ["guitar", "bass"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40
+    },
+    "effects": {
+      "type": "object",
+      "required": ["gain", "tone_eq", "compressor", "drive", "modulation", "delay_reverb"],
+      "additionalProperties": false,
+      "properties": {
+        "gain": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "tone_eq": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "compressor": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "drive": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "modulation": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "delay_reverb": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "bypass": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["manual", "youtube"]
+    }
+  }
+}

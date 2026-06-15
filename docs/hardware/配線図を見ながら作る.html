@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MEFX-S3 配線図を見ながら作る</title>
+    <style>
+      body {
+        margin: 0;
+        color: #1f2937;
+        background: #f8fafc;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      header, main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+      header {
+        padding: 24px 0 12px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      section {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+      }
+      img {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th, td {
+        border: 1px solid #e5e7eb;
+        padding: 8px;
+        vertical-align: top;
+      }
+      th {
+        background: #f3f4f6;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+      }
+      @media print {
+        body {
+          background: #fff;
+        }
+        section {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>MEFX-S3 配線図を見ながら作る</h1>
+      <p>このページを開いたまま、上から順番に配線してください。最初はケースに入れず、机上で確認します。</p>
+    </header>
+
+    <main>
+      <section>
+        <h2>全体配線図</h2>
+        <img src="./wiring-diagram.svg" alt="MEFX-S3 実体配線図" />
+      </section>
+
+      <section>
+        <h2>最初に測る電源</h2>
+        <div class="grid">
+          <div class="card"><strong>+9V</strong><br />9V DCジャックから逆接保護後</div>
+          <div class="card"><strong>+5V</strong><br />5Vレギュレーター出力</div>
+          <div class="card"><strong>+3.3V</strong><br />3.3Vレギュレーター出力</div>
+          <div class="card"><strong>VGND 4.5V</strong><br />47kΩ + 47kΩの中点</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>作業順</h2>
+        <ol>
+          <li>電源だけ作る。</li>
+          <li>9V、5V、3.3V、4.5Vをテスターで測る。</li>
+          <li>TL072入力側を作る。</li>
+          <li>PCM1808/PCM5102A/ESP32をI2Sでつなぐ。</li>
+          <li>TL072出力側と出力ジャックを作る。</li>
+          <li>小音量で音を確認する。</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>重要なピン対応</h2>
+        <table>
+          <thead>
+            <tr><th>ESP32-S3</th><th>接続先</th><th>用途</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>GPIO4</td><td>PCM1808 BCK/BCLK</td><td>ADCクロック</td></tr>
+            <tr><td>GPIO5</td><td>PCM1808 LRCK/LRC/WS</td><td>ADC LRクロック</td></tr>
+            <tr><td>GPIO6</td><td>PCM1808 DOUT</td><td>ADCデータ入力</td></tr>
+            <tr><td>GPIO7</td><td>PCM5102A BCK/BCLK</td><td>DACクロック</td></tr>
+            <tr><td>GPIO15</td><td>PCM5102A LCK/LRCK/WS</td><td>DAC LRクロック</td></tr>
+            <tr><td>GPIO16</td><td>PCM5102A DIN</td><td>DACデータ出力</td></tr>
+            <tr><td>GPIO0</td><td>フットスイッチ片側</td><td>押すとGND</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>詳しい配線表</h2>
+        <p>詳細は <a href="./実体配線図.md">実体配線図.md</a> と <a href="./配線表.csv">配線表.csv</a> を見てください。</p>
+      </section>
+    </main>
+  </body>
+</html>

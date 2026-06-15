@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100">
+  <defs>
+    <style>
+      .title { font: 700 32px sans-serif; fill: #111; }
+      .sub { font: 18px sans-serif; fill: #333; }
+      .label { font: 18px sans-serif; fill: #111; }
+      .small { font: 14px sans-serif; fill: #222; }
+      .box { fill: #f7f7f7; stroke: #222; stroke-width: 2; rx: 12; }
+      .rail { stroke-width: 8; fill: none; stroke-linecap: round; }
+      .wire { stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .audio { stroke: #16a34a; }
+      .gnd { stroke: #111; }
+      .v9 { stroke: #dc2626; }
+      .v5 { stroke: #f97316; }
+      .v33 { stroke: #ec4899; }
+      .vgnd { stroke: #7c3aed; }
+      .clk { stroke: #eab308; }
+      .data { stroke: #2563eb; }
+      .sw { stroke: #9ca3af; }
+      .pin { fill: #fff; stroke: #222; stroke-width: 1.5; }
+      .note { fill: #fff7ed; stroke: #f97316; stroke-width: 2; rx: 8; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1100" fill="#ffffff"/>
+  <text x="40" y="55" class="title">MEFX-S3 実体配線図 v1</text>
+  <text x="40" y="88" class="sub">色: 赤=9V / オレンジ=5V / ピンク=3.3V / 黒=GND / 紫=4.5V仮想GND / 黄=I2Sクロック / 青=I2Sデータ / 緑=音声</text>
+
+  <!-- Power rails -->
+  <text x="55" y="140" class="label">電源レール</text>
+  <line x1="60" y1="170" x2="1540" y2="170" class="rail v9"/>
+  <text x="65" y="160" class="small">+9V</text>
+  <line x1="60" y1="205" x2="1540" y2="205" class="rail v5"/>
+  <text x="65" y="195" class="small">+5V</text>
+  <line x1="60" y1="240" x2="1540" y2="240" class="rail v33"/>
+  <text x="65" y="230" class="small">+3.3V</text>
+  <line x1="60" y1="275" x2="1540" y2="275" class="rail vgnd"/>
+  <text x="65" y="265" class="small">VGND 4.5V</text>
+  <line x1="60" y1="310" x2="1540" y2="310" class="rail gnd"/>
+  <text x="65" y="300" class="small">GND</text>
+
+  <!-- Blocks -->
+  <rect x="60" y="380" width="170" height="110" class="box"/>
+  <text x="90" y="420" class="label">9V DC</text>
+  <text x="92" y="450" class="small">センターマイナス</text>
+  <text x="92" y="474" class="small">Tip/Center = -</text>
+
+  <rect x="300" y="370" width="260" height="170" class="box"/>
+  <text x="335" y="405" class="label">電源/仮想GND</text>
+  <text x="325" y="435" class="small">1N5819 逆接保護</text>
+  <text x="325" y="460" class="small">5V Reg / 3.3V Reg</text>
+  <text x="325" y="485" class="small">47k + 47k -> 4.5V</text>
+  <text x="325" y="510" class="small">10uF + 100nF</text>
+
+  <rect x="60" y="620" width="190" height="125" class="box"/>
+  <text x="90" y="660" class="label">INPUT Jack</text>
+  <text x="92" y="690" class="small">Tip = 音声</text>
+  <text x="92" y="715" class="small">Sleeve = GND</text>
+
+  <rect x="330" y="600" width="260" height="190" class="box"/>
+  <text x="388" y="635" class="label">TL072</text>
+  <text x="355" y="665" class="small">A側 入力プリアンプ</text>
+  <text x="355" y="690" class="small">pin3 IN+ : 入力</text>
+  <text x="355" y="715" class="small">pin2 IN- : 帰還</text>
+  <text x="355" y="740" class="small">pin1 OUT : ADCへ</text>
+  <text x="355" y="765" class="small">B側 出力バッファ</text>
+
+  <rect x="680" y="560" width="240" height="180" class="box"/>
+  <text x="752" y="595" class="label">PCM1808</text>
+  <text x="710" y="625" class="small">LIN = 楽器</text>
+  <text x="710" y="650" class="small">RIN = マイク</text>
+  <text x="710" y="675" class="small">BCK/LRCK/DOUT</text>
+  <text x="710" y="700" class="small">VCCはモジュール仕様</text>
+
+  <rect x="680" y="820" width="240" height="130" class="box"/>
+  <text x="725" y="858" class="label">Mic Module</text>
+  <text x="710" y="890" class="small">OUT -> PCM1808 RIN</text>
+  <text x="710" y="915" class="small">VCCは仕様に合わせる</text>
+
+  <rect x="1010" y="515" width="250" height="260" class="box"/>
+  <text x="1080" y="552" class="label">ESP32-S3</text>
+  <text x="1045" y="585" class="small">GPIO4  -> ADC BCK</text>
+  <text x="1045" y="610" class="small">GPIO5  -> ADC LRCK</text>
+  <text x="1045" y="635" class="small">GPIO6  <- ADC DOUT</text>
+  <text x="1045" y="670" class="small">GPIO7  -> DAC BCK</text>
+  <text x="1045" y="695" class="small">GPIO15 -> DAC LRCK</text>
+  <text x="1045" y="720" class="small">GPIO16 -> DAC DIN</text>
+  <text x="1045" y="755" class="small">GPIO0  -> Footswitch</text>
+
+  <rect x="1350" y="560" width="200" height="170" class="box"/>
+  <text x="1410" y="596" class="label">PCM5102A</text>
+  <text x="1380" y="630" class="small">BCK/LRCK/DIN</text>
+  <text x="1380" y="655" class="small">L-OUT -> TL072 B</text>
+  <text x="1380" y="680" class="small">SCK -> GND</text>
+  <text x="1380" y="705" class="small">XMT -> 3.3V</text>
+
+  <rect x="1350" y="850" width="190" height="110" class="box"/>
+  <text x="1384" y="890" class="label">OUTPUT Jack</text>
+  <text x="1385" y="920" class="small">Tip = 出力</text>
+  <text x="1385" y="945" class="small">Sleeve = GND</text>
+
+  <rect x="1020" y="865" width="210" height="95" class="box"/>
+  <text x="1065" y="902" class="label">Footswitch</text>
+  <text x="1045" y="932" class="small">GPIO0 と GND</text>
+
+  <!-- Rails to blocks -->
+  <path d="M145 380 V170" class="wire v9"/>
+  <path d="M175 490 V310" class="wire gnd"/>
+  <path d="M430 370 V170" class="wire v9"/>
+  <path d="M455 370 V205" class="wire v5"/>
+  <path d="M480 370 V240" class="wire v33"/>
+  <path d="M505 370 V275" class="wire vgnd"/>
+  <path d="M530 370 V310" class="wire gnd"/>
+  <path d="M460 600 V170" class="wire v9"/>
+  <path d="M500 600 V310" class="wire gnd"/>
+  <path d="M805 560 V240" class="wire v33"/>
+  <path d="M835 560 V310" class="wire gnd"/>
+  <path d="M800 820 V240" class="wire v33"/>
+  <path d="M830 820 V310" class="wire gnd"/>
+  <path d="M1125 515 V205" class="wire v5"/>
+  <path d="M1160 515 V310" class="wire gnd"/>
+  <path d="M1450 560 V205" class="wire v5"/>
+  <path d="M1480 560 V310" class="wire gnd"/>
+
+  <!-- Audio path -->
+  <path d="M250 675 C290 675, 300 675, 330 675" class="wire audio"/>
+  <text x="265" y="662" class="small">100nF + 1M to VGND</text>
+  <path d="M590 700 C630 700, 640 620, 680 620" class="wire audio"/>
+  <text x="600" y="680" class="small">1uF</text>
+  <path d="M800 820 C795 780, 800 760, 800 740" class="wire audio"/>
+  <text x="820" y="795" class="small">Mic OUT 1uF</text>
+  <path d="M1350 655 C1250 815, 620 805, 590 750" class="wire audio"/>
+  <text x="1180" y="815" class="small">DAC L-OUT -> 1uF -> TL072 B pin5</text>
+  <path d="M590 765 C850 1010, 1290 930, 1350 905" class="wire audio"/>
+  <text x="930" y="1010" class="small">TL072 B pin7 -> 10uF -> 100Ω -> Output Tip</text>
+
+  <!-- I2S ADC -->
+  <path d="M1010 585 C965 585, 950 620, 920 620" class="wire clk"/>
+  <path d="M1010 610 C965 610, 950 650, 920 650" class="wire clk"/>
+  <path d="M920 675 C965 675, 950 635, 1010 635" class="wire data"/>
+  <text x="930" y="548" class="small">ADC I2S</text>
+
+  <!-- I2S DAC -->
+  <path d="M1260 670 C1305 670, 1310 615, 1350 615" class="wire clk"/>
+  <path d="M1260 695 C1305 695, 1310 640, 1350 640" class="wire clk"/>
+  <path d="M1260 720 C1305 720, 1310 665, 1350 665" class="wire data"/>
+  <text x="1280" y="520" class="small">DAC I2S</text>
+
+  <!-- Switch -->
+  <path d="M1125 775 V865" class="wire sw"/>
+  <path d="M1230 920 C1300 920, 1310 310, 1500 310" class="wire gnd"/>
+
+  <!-- VGND to TL072 pins -->
+  <path d="M400 600 V275" class="wire vgnd"/>
+  <path d="M540 600 V275" class="wire vgnd"/>
+
+  <!-- Notes -->
+  <rect x="60" y="1000" width="1480" height="70" class="note"/>
+  <text x="85" y="1030" class="label">注意</text>
+  <text x="150" y="1030" class="small">モジュールのVCC電圧とピン名は購入品の説明を優先してください。電源4本 (+9V/+5V/+3.3V/VGND) を測ってからESP32/ADC/DACを接続します。</text>
+  <text x="150" y="1055" class="small">ESP32 GPIO番号は現在のファームウェア既定値です。ボード上の印字が D4 などの場合は、必ずGPIO番号に読み替えてください。</text>
+</svg>

@@ -1,0 +1,44 @@
+分類,番号,つなぐ元,つなぐ先,部品/値,線色,確認
+電源,P1,9V DCジャック 外側/スリーブ,GNDレール,なし,黒,センターマイナス電源前提
+電源,P2,9V DCジャック 中心,逆接保護ダイオード cathode側,1N5819等,赤,極性注意
+電源,P3,逆接保護ダイオード anode側,+9Vレール,1N5819等,赤,約8.7-9V
+電源,P4,+9Vレール,5Vレギュレーター IN,レギュレーター,赤,5V出力確認
+電源,P5,5Vレギュレーター OUT,+5Vレール,レギュレーター,オレンジ,5V
+電源,P6,+5Vレール,3.3Vレギュレーター IN,レギュレーター,オレンジ,3.3V出力確認
+電源,P7,3.3Vレギュレーター OUT,+3V3レール,レギュレーター,ピンク,3.3V
+電源,P8,+9Vレール,R_VG1,47kΩ,赤,仮想GND分圧
+電源,P9,R_VG1,R_VG2,中点がVGND_4V5,紫,約4.5V
+電源,P10,R_VG2,GNDレール,47kΩ,黒,約4.5V
+入力,I1,入力ジャック Sleeve,GNDレール,なし,黒,ジャック外側
+入力,I2,入力ジャック Tip,C_IN,100nF,緑,DCを切る
+入力,I3,C_IN 反対側,TL072 pin3 / IN+ A,なし,緑,入力信号
+入力,I4,TL072 pin3 / IN+ A,VGND_4V5,1MΩ,紫,入力バイアス
+入力,I5,TL072 pin2 / IN- A,TL072 pin1 / OUT A,100kΩ,緑,負帰還
+入力,I6,TL072 pin2 / IN- A,VGND_4V5,100kΩ,紫,約2倍ゲイン
+ADC,A1,TL072 pin1 / OUT A,C_ADC_L,1uF,緑,ADCへAC結合
+ADC,A2,C_ADC_L 反対側,PCM1808 LIN / L-IN,なし,緑,楽器入力
+ADC,D1,ESP32 GPIO4,PCM1808 BCK / BCLK,直結,黄,ADC BCLK
+ADC,D2,ESP32 GPIO5,PCM1808 LRCK / LRC / WS,直結,黄,ADC LRCLK
+ADC,D3,PCM1808 DOUT,ESP32 GPIO6,直結,青,ADCデータ
+マイク,M1,マイクモジュール VCC,+3V3または+5V,仕様に合わせる,ピンク/オレンジ,電源
+マイク,M2,マイクモジュール GND,GNDレール,なし,黒,共通GND
+マイク,M3,マイクモジュール OUT,C_MIC,1uF,緑,DCを切る
+マイク,M4,C_MIC 反対側,PCM1808 RIN / R-IN,なし,緑,マイク入力
+DAC,O1,ESP32 GPIO7,PCM5102A BCK / BCLK,直結,黄,DAC BCLK
+DAC,O2,ESP32 GPIO15,PCM5102A LCK / LRCK / WS,直結,黄,DAC LRCLK
+DAC,O3,ESP32 GPIO16,PCM5102A DIN,直結,青,DACデータ
+DAC,O4,PCM5102A GND,GNDレール,なし,黒,共通GND
+DAC,O5,PCM5102A VIN / VCC,+5Vまたは+3V3,仕様に合わせる,オレンジ/ピンク,電源
+DAC,O6,PCM5102A SCK,GND,多くのモジュールで可,黒,3線I2S時
+DAC,O7,PCM5102A XMT,+3V3,10kΩプルアップ推奨,ピンク,ミュート解除
+出力,B1,PCM5102A L-OUT,C_DAC_OUT,1uF,緑,出力AC結合
+出力,B2,C_DAC_OUT 反対側,TL072 pin5 / IN+ B,なし,緑,出力バッファ入力
+出力,B3,TL072 pin5 / IN+ B,VGND_4V5,100kΩ,紫,バイアス
+出力,B4,TL072 pin6 / IN- B,TL072 pin7 / OUT B,100kΩ,緑,負帰還
+出力,B5,TL072 pin6 / IN- B,VGND_4V5,100kΩ,紫,約2倍ゲイン
+出力,J1,TL072 pin7 / OUT B,C_OUT,10uF,緑,DCを切る
+出力,J2,C_OUT 反対側,出力ジャック Tip,100Ω直列推奨,緑,出力
+出力,J3,出力ジャック Tip,GND,100kΩ,黒,ポップノイズ低減
+出力,J4,出力ジャック Sleeve,GNDレール,なし,黒,共通GND
+スイッチ,S1,フットスイッチ片側,ESP32 GPIO0,直結,白,内部プルアップ
+スイッチ,S2,フットスイッチ反対側,GNDレール,なし,黒,押すとGND
