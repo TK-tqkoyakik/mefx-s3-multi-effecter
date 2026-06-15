@@ -37,6 +37,19 @@ button {
   cursor: pointer;
 }
 
+.button-link {
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #f7f3ea;
+  background: #202020;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
@@ -202,6 +215,37 @@ main {
   margin: 0.35rem 0;
 }
 
+.analyzer-panel {
+  border-bottom: 1px solid #2a2a2a;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.analyzer-panel h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.analyzer-panel p {
+  margin: 0.35rem 0 0;
+  color: #cfc7b8;
+}
+
+.analyzer-help {
+  border: 1px solid #333333;
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  background: #101010;
+}
+
+.link-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
 .row {
   display: grid;
   grid-template-columns: 1fr 12rem;
@@ -360,6 +404,7 @@ select {
   .actions button,
   .topbar button,
   .connection-actions button,
+  .link-actions .button-link,
   .language-select {
     width: 100%;
   }

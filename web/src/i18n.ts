@@ -52,6 +52,23 @@ export type Messages = {
   couldNotDeleteDevicePreset: string;
   analyzingTone: string;
   analysisFailed: string;
+  localAnalyzerTitle: string;
+  localAnalyzerBody: string;
+  localAnalyzerChecking: string;
+  localAnalyzerOnline: string;
+  localAnalyzerOffline: string;
+  localAnalyzerAutoShutdownOn: string;
+  localAnalyzerAutoShutdownOff: string;
+  localAnalyzerLastChecked: (time: string) => string;
+  startLocalAnalyzer: string;
+  downloadLocalAnalyzer: string;
+  localAnalyzerGuide: string;
+  retryLocalAnalyzer: string;
+  localAnalyzerOfflineHelp: string;
+  localAnalyzerStartRequested: string;
+  localAnalyzerOnlineMessage: string;
+  localAnalyzerOfflineMessage: string;
+  localAnalyzerRequired: string;
   bluetoothPanelTitle: string;
   bluetoothPanelBody: string;
   pcBluetoothReady: string;
@@ -121,6 +138,26 @@ export const messages: Record<Language, Messages> = {
     couldNotDeleteDevicePreset: "本体プリセットを削除できませんでした",
     analyzingTone: "ローカルサーバーで音色を解析中...",
     analysisFailed: "解析に失敗しました",
+    localAnalyzerTitle: "ローカル解析サーバー",
+    localAnalyzerBody:
+      "YouTube音色コピーにはPC上の解析サーバーが必要です。起動中はWebアプリからheartbeatを送り、ページを閉じると自動終了します。",
+    localAnalyzerChecking: "確認中",
+    localAnalyzerOnline: "起動中",
+    localAnalyzerOffline: "未起動",
+    localAnalyzerAutoShutdownOn: "自動終了 有効",
+    localAnalyzerAutoShutdownOff: "自動終了 無効",
+    localAnalyzerLastChecked: (time) => `最終確認 ${time}`,
+    startLocalAnalyzer: "解析サーバーを起動",
+    downloadLocalAnalyzer: "解析ツールをダウンロード",
+    localAnalyzerGuide: "設定手順を見る",
+    retryLocalAnalyzer: "再確認",
+    localAnalyzerOfflineHelp:
+      "初回は解析ツールをダウンロードし、手順書に沿って mefx:// 起動リンクを登録してください。登録後はこの画面の起動ボタンから開けます。",
+    localAnalyzerStartRequested:
+      "解析サーバーの起動を要求しました。ブラウザに確認が出たら許可してください。",
+    localAnalyzerOnlineMessage: "ローカル解析サーバーに接続できました",
+    localAnalyzerOfflineMessage: "ローカル解析サーバーが見つかりません",
+    localAnalyzerRequired: "先にローカル解析サーバーを起動してください",
     bluetoothPanelTitle: "PC Bluetooth接続",
     bluetoothPanelBody:
       "PCのChromeまたはEdgeでMEFX-S3実機へ接続します。シミュレーターとは別なので、実機接続では必ずBluetooth選択画面が開きます。",
@@ -202,6 +239,26 @@ export const messages: Record<Language, Messages> = {
     couldNotDeleteDevicePreset: "Could not delete device preset",
     analyzingTone: "Analyzing tone on local server...",
     analysisFailed: "Analysis failed",
+    localAnalyzerTitle: "Local Analysis Server",
+    localAnalyzerBody:
+      "YouTube Tone Match needs the analysis server running on this PC. While it is connected, the web app sends a heartbeat; the server exits automatically after the page is closed.",
+    localAnalyzerChecking: "Checking",
+    localAnalyzerOnline: "Running",
+    localAnalyzerOffline: "Not running",
+    localAnalyzerAutoShutdownOn: "Auto shutdown on",
+    localAnalyzerAutoShutdownOff: "Auto shutdown off",
+    localAnalyzerLastChecked: (time) => `Last checked ${time}`,
+    startLocalAnalyzer: "Start analyzer",
+    downloadLocalAnalyzer: "Download tools",
+    localAnalyzerGuide: "Open setup guide",
+    retryLocalAnalyzer: "Check again",
+    localAnalyzerOfflineHelp:
+      "On first use, download the tools and register the mefx:// launcher from the setup guide. After that, this page can open the launcher.",
+    localAnalyzerStartRequested:
+      "Requested the local analyzer. Allow the browser prompt if it appears.",
+    localAnalyzerOnlineMessage: "Local analysis server is connected",
+    localAnalyzerOfflineMessage: "Local analysis server was not found",
+    localAnalyzerRequired: "Start the local analysis server first",
     bluetoothPanelTitle: "PC Bluetooth Connection",
     bluetoothPanelBody:
       "Connect this PC's Chrome or Edge directly to the MEFX-S3 device. Real device connection is separate from simulator mode.",

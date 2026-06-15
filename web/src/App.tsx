@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { Bluetooth, Cable, Music2, Save, Trash2, Unplug, Wand2 } from "lucide-react";
+import { Activity, Bluetooth, Cable, Download, Music2, Power, RefreshCw, Save, Trash2, Unplug, Wand2 } from "lucide-react";
 import { type DevicePresetSummary, MefxBleClient } from "./lib/ble";
+import {
+  analysisEndpoint,
+  checkLocalAnalyzer,
+  localAnalyzerDownloadUrl,
+  localAnalyzerGuideUrl,
+  localAnalyzerLauncherUrl,
+  sendLocalAnalyzerCloseBeacon,
+  sendLocalAnalyzerHeartbeat,
+  type LocalAnalyzerHealth,
+  type LocalAnalyzerStatus
+} from "./lib/localAnalyzer";
 import { loadLocalPresets, makePreset, saveLocalPresets, validatePreset } from "./lib/presets";
 import { PresetPanel } from "./components/PresetPanel";
 import { getInitialLanguage, languageOptions, languageStorageKey, messages, type Language } from "./i18n";
@@ -8,8 +19,6 @@ import type { AudioTelemetry, DeviceStatus, Instrument, Preset } from "./types";
 import "./styles.css";
 
 type Page = "manual" | "youtube";
-
-const analysisEndpoint = "http://localhost:8787/analyze";
 
 export default function App() {
   const [language, setLanguage] = useState<Language>(() => getInitialLanguage());
@@ -25,6 +34,9 @@ export default function App() {
   const [devicePresets, setDevicePresets] = useState<DevicePresetSummary[]>([]);
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [targetInstrument, setTargetInstrument] = useState<Instrument>("guitar");
+  const [analyzerStatus, setAnalyzerStatus] = useState<LocalAnalyzerStatus>("checking");
+  const [analyzerInfo, setAnalyzerInfo] = useState<LocalAnalyzerHealth | null>(null);
+  const [analyzerLastChecked, setAnalyzerLastChecked] = useState("");
   const [telemetry, setTelemetry] = useState<AudioTelemetry | null>(null);
   const validation = useMemo(() => validatePreset(preset), [preset]);
 
@@ -42,6 +54,45 @@ export default function App() {
       setMessage(messages[getInitialLanguage()].disconnectedMessage);
     });
   }, [ble]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const health = await checkLocalAnalyzer();
+        if (cancelled) return;
+        setAnalyzerInfo(health);
+        setAnalyzerStatus("online");
+      } catch {
+        if (cancelled) return;
+        setAnalyzerInfo(null);
+        setAnalyzerStatus("offline");
+      } finally {
+        if (!cancelled) setAnalyzerLastChecked(new Date().toLocaleTimeString());
+      }
+    };
+
+    void refresh();
+    const timer = window.setInterval(refresh, 15000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (analyzerStatus !== "online") return;
+    void sendLocalAnalyzerHeartbeat().catch(() => undefined);
+    const timer = window.setInterval(() => {
+      void sendLocalAnalyzerHeartbeat().catch(() => undefined);
+    }, 10000);
+
+    window.addEventListener("pagehide", sendLocalAnalyzerCloseBeacon);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("pagehide", sendLocalAnalyzerCloseBeacon);
+    };
+  }, [analyzerStatus]);
 
   const changeLanguage = (nextLanguage: Language) => {
     setLanguage(nextLanguage);
@@ -92,6 +143,30 @@ export default function App() {
     setDeviceStatus(null);
     setTelemetry(null);
     setMessage(text.disconnectedMessage);
+  };
+
+  const refreshAnalyzer = async () => {
+    try {
+      setAnalyzerStatus("checking");
+      const health = await checkLocalAnalyzer();
+      setAnalyzerInfo(health);
+      setAnalyzerStatus("online");
+      setAnalyzerLastChecked(new Date().toLocaleTimeString());
+      setMessage(text.localAnalyzerOnlineMessage);
+    } catch {
+      setAnalyzerInfo(null);
+      setAnalyzerStatus("offline");
+      setAnalyzerLastChecked(new Date().toLocaleTimeString());
+      setMessage(text.localAnalyzerOfflineMessage);
+    }
+  };
+
+  const startLocalAnalyzer = () => {
+    window.location.href = localAnalyzerLauncherUrl;
+    setMessage(text.localAnalyzerStartRequested);
+    window.setTimeout(() => {
+      void refreshAnalyzer();
+    }, 3500);
   };
 
   const sendPreset = async () => {
@@ -150,6 +225,7 @@ export default function App() {
 
   const analyzeYoutube = async () => {
     try {
+      if (analyzerStatus !== "online") throw new Error(text.localAnalyzerRequired);
       setMessage(text.analyzingTone);
       const response = await fetch(analysisEndpoint, {
         method: "POST",
@@ -272,6 +348,60 @@ export default function App() {
         </>
       ) : (
         <section className="panel">
+          <div className="analyzer-panel">
+            <div className="connection-heading">
+              <div>
+                <h2>{text.localAnalyzerTitle}</h2>
+                <p>{text.localAnalyzerBody}</p>
+              </div>
+              <span className={analyzerStatus === "online" ? "badge good" : analyzerStatus === "checking" ? "badge warn" : "badge"}>
+                {analyzerStatus === "online"
+                  ? text.localAnalyzerOnline
+                  : analyzerStatus === "checking"
+                    ? text.localAnalyzerChecking
+                    : text.localAnalyzerOffline}
+              </span>
+            </div>
+
+            <div className="connection-grid">
+              <div className="connection-status">
+                {analyzerInfo && (
+                  <span className={analyzerInfo.autoShutdown ? "badge good" : "badge warn"}>
+                    {analyzerInfo.autoShutdown ? text.localAnalyzerAutoShutdownOn : text.localAnalyzerAutoShutdownOff}
+                  </span>
+                )}
+                {analyzerLastChecked && <span className="badge">{text.localAnalyzerLastChecked(analyzerLastChecked)}</span>}
+              </div>
+
+              <div className="connection-actions">
+                <button onClick={startLocalAnalyzer}>
+                  <Power size={18} />
+                  {text.startLocalAnalyzer}
+                </button>
+                <button onClick={refreshAnalyzer}>
+                  <RefreshCw size={18} />
+                  {text.retryLocalAnalyzer}
+                </button>
+              </div>
+            </div>
+
+            {analyzerStatus !== "online" && (
+              <div className="analyzer-help">
+                <p>{text.localAnalyzerOfflineHelp}</p>
+                <div className="link-actions">
+                  <a className="button-link" href={localAnalyzerDownloadUrl}>
+                    <Download size={18} />
+                    {text.downloadLocalAnalyzer}
+                  </a>
+                  <a className="button-link" href={localAnalyzerGuideUrl} target="_blank" rel="noreferrer">
+                    <Activity size={18} />
+                    {text.localAnalyzerGuide}
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
           <label className="field">
             <span>{text.youtubeUrl}</span>
             <input
@@ -287,7 +417,7 @@ export default function App() {
               <option value="bass">{text.instruments.bass}</option>
             </select>
           </label>
-          <button className="primary" onClick={analyzeYoutube} disabled={!youtubeUrl.trim()}>
+          <button className="primary" onClick={analyzeYoutube} disabled={!youtubeUrl.trim() || analyzerStatus !== "online"}>
             {text.analyzeAndCreate}
           </button>
         </section>
