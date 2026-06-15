@@ -10,7 +10,11 @@ if ($nodeDir) {
 
 if (!(Test-Path "node_modules")) {
   Write-Host "Installing web dependencies..."
-  & $npm install
+  if (Test-Path "package-lock.json") {
+    & $npm ci
+  } else {
+    & $npm install
+  }
 }
 
 & $npm run build

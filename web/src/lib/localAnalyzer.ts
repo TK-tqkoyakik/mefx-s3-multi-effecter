@@ -12,7 +12,6 @@ export const localAnalyzerBaseUrl = "http://127.0.0.1:8787";
 export const analysisEndpoint = `${localAnalyzerBaseUrl}/analyze`;
 export const localAnalyzerHeartbeatEndpoint = `${localAnalyzerBaseUrl}/heartbeat`;
 export const localAnalyzerClientCloseEndpoint = `${localAnalyzerBaseUrl}/client-close`;
-export const localAnalyzerLauncherUrl = "mefx://start";
 export const localAnalyzerDownloadUrl =
   "https://github.com/TK-tqkoyakik/mefx-s3-multi-effecter/archive/refs/heads/master.zip";
 export const localAnalyzerGuideUrl =

@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Bluetooth, Cable, Download, Music2, Power, RefreshCw, Save, Trash2, Unplug, Wand2 } from "lucide-react";
+import { Activity, Bluetooth, Cable, Download, Music2, RefreshCw, Save, Trash2, Unplug, Wand2 } from "lucide-react";
 import { type DevicePresetSummary, MefxBleClient } from "./lib/ble";
 import {
   analysisEndpoint,
   checkLocalAnalyzer,
   localAnalyzerDownloadUrl,
   localAnalyzerGuideUrl,
-  localAnalyzerLauncherUrl,
   sendLocalAnalyzerCloseBeacon,
   sendLocalAnalyzerHeartbeat,
   type LocalAnalyzerHealth,
@@ -161,12 +160,9 @@ export default function App() {
     }
   };
 
-  const startLocalAnalyzer = () => {
-    window.location.href = localAnalyzerLauncherUrl;
+  const openLocalAnalyzerGuide = () => {
+    window.open(localAnalyzerGuideUrl, "_blank", "noopener,noreferrer");
     setMessage(text.localAnalyzerStartRequested);
-    window.setTimeout(() => {
-      void refreshAnalyzer();
-    }, 3500);
   };
 
   const sendPreset = async () => {
@@ -374,8 +370,8 @@ export default function App() {
               </div>
 
               <div className="connection-actions">
-                <button onClick={startLocalAnalyzer}>
-                  <Power size={18} />
+                <button onClick={openLocalAnalyzerGuide}>
+                  <Activity size={18} />
                   {text.startLocalAnalyzer}
                 </button>
                 <button onClick={refreshAnalyzer}>

@@ -16,9 +16,13 @@ $nodeDir = Get-LocalNodeDir
 if ($nodeDir) {
   $env:PATH = "$nodeDir;$env:PATH"
 }
-& $npm install
+if (Test-Path "package-lock.json") {
+  & $npm ci
+} else {
+  & $npm install
+}
 if ($LASTEXITCODE -ne 0) {
-  throw "npm install failed."
+  throw "npm dependency install failed."
 }
 
 if (Test-Path $runtimePython) {

@@ -6,6 +6,10 @@ import ffmpegPath from "ffmpeg-static";
 import ffprobe from "ffprobe-static";
 
 const EFFECT_KEYS = ["gain", "tone_eq", "compressor", "drive", "modulation", "delay_reverb"];
+const ALLOWED_YOUTUBE_HOSTS = new Set(["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be"]);
+const MAX_URL_LENGTH = 2048;
+const MAX_DOWNLOAD_SIZE = process.env.MEFX_MAX_DOWNLOAD_SIZE || "80M";
+const MAX_VIDEO_DURATION_SECONDS = Number(process.env.MEFX_MAX_VIDEO_DURATION_SECONDS ?? 900);
 const projectRoot = path.resolve(import.meta.dirname, "..", "..");
 const localPythonPackages = path.join(projectRoot, "tools", "python-packages");
 const espPythonPackages = "C:\\Espressif\\mefx_python_packages";
@@ -86,7 +90,15 @@ function canUseDemucs() {
 
 export function validateAnalyzeRequest(body) {
   if (!body || typeof body !== "object") return "Request body must be JSON";
-  if (typeof body.url !== "string" || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//.test(body.url)) {
+  if (typeof body.url !== "string" || body.url.length === 0 || body.url.length > MAX_URL_LENGTH) {
+    return "A valid YouTube URL is required";
+  }
+  try {
+    const parsed = new URL(body.url);
+    if (parsed.protocol !== "https:" || !ALLOWED_YOUTUBE_HOSTS.has(parsed.hostname.toLowerCase())) {
+      return "A valid YouTube URL is required";
+    }
+  } catch {
     return "A valid YouTube URL is required";
   }
   if (!["guitar", "bass"].includes(body.instrument)) return "instrument must be guitar or bass";
@@ -100,6 +112,16 @@ async function downloadAudio(url, tempDir) {
     "yt_dlp",
     "--no-playlist",
     "--no-warnings",
+    "--socket-timeout",
+    "20",
+    "--retries",
+    "2",
+    "--fragment-retries",
+    "2",
+    "--max-filesize",
+    MAX_DOWNLOAD_SIZE,
+    "--match-filter",
+    `duration <= ${MAX_VIDEO_DURATION_SECONDS}`,
     "-f",
     "ba/bestaudio",
     "-o",
