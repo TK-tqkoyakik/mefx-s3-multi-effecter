@@ -1,6 +1,8 @@
 node_modules/
+.pnpm-store/
 dist/
 build/
+release/
 .vite/
 managed_components/
 logs/
@@ -17,3 +19,25 @@ sdkconfig.old
 *.log
 .DS_Store
 Thumbs.db
+
+# Local build products and machine-specific state
+/build_artifacts/
+/output/
+/tmp/
+/firmware/.tmp/
+/firmware/build_*/
+dist-electron/
+*.kicad_prl
+**/.history/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+
+# Downloaded storefront snapshots (not project sources)
+/docs/hardware/*snapshot.html
+/docs/hardware/lcsc_snapshot_03/
+/docs/hardware/module_reference_01/**/page.html
+/docs/hardware/module_reference_01/*_page.html
