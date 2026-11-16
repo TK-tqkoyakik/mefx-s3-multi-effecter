@@ -1,0 +1,519 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1600" viewBox="0 0 2400 1600">
+  <defs>
+    <style>
+      .sheet { fill: #ffffff; }
+      .frame { fill: none; stroke: #111; stroke-width: 2; }
+      .grid { stroke: #f1f1f1; stroke-width: 1; }
+      .wire { stroke: #111; stroke-width: 2.2; fill: none; stroke-linecap: square; stroke-linejoin: round; }
+      .thin { stroke: #111; stroke-width: 1.6; fill: none; }
+      .symbol { stroke: #111; stroke-width: 2.2; fill: #ffffff; }
+      .ic { stroke: #111; stroke-width: 2.2; fill: #ffffff; }
+      .label { font: 700 22px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+      .sub { font: 15px "Segoe UI", "Noto Sans JP", sans-serif; fill: #222; }
+      .txt { font: 18px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+      .small { font: 14px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+      .tiny { font: 12px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+      .net { font: 700 14px "Consolas", "Segoe UI", sans-serif; fill: #111; }
+      .ref { font: 700 16px "Consolas", "Segoe UI", sans-serif; fill: #111; }
+      .value { font: 14px "Consolas", "Segoe UI", sans-serif; fill: #111; }
+      .section { font: 700 20px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+      .box-title { font: 700 18px "Segoe UI", "Noto Sans JP", sans-serif; fill: #111; }
+    </style>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path class="grid" d="M40 0H0V40"/>
+    </pattern>
+
+    <g id="gnd">
+      <path class="wire" d="M0 0 V10"/>
+      <path class="wire" d="M-18 10 H18"/>
+      <path class="wire" d="M-12 17 H12"/>
+      <path class="wire" d="M-6 24 H6"/>
+    </g>
+
+    <g id="pwr">
+      <path class="wire" d="M0 28 V0"/>
+      <path class="wire" d="M-12 12 L0 0 L12 12"/>
+    </g>
+
+    <g id="res-h">
+      <path class="wire" d="M0 20 H24"/>
+      <rect class="symbol" x="24" y="8" width="72" height="24"/>
+      <path class="wire" d="M96 20 H120"/>
+    </g>
+
+    <g id="res-v">
+      <path class="wire" d="M20 0 V24"/>
+      <rect class="symbol" x="8" y="24" width="24" height="72"/>
+      <path class="wire" d="M20 96 V120"/>
+    </g>
+
+    <g id="cap-h">
+      <path class="wire" d="M0 20 H48"/>
+      <path class="wire" d="M48 0 V40"/>
+      <path class="wire" d="M72 0 V40"/>
+      <path class="wire" d="M72 20 H120"/>
+    </g>
+
+    <g id="cap-v">
+      <path class="wire" d="M20 0 V48"/>
+      <path class="wire" d="M0 48 H40"/>
+      <path class="wire" d="M0 72 H40"/>
+      <path class="wire" d="M20 72 V120"/>
+    </g>
+
+    <g id="diode-h">
+      <path class="wire" d="M0 20 H36"/>
+      <path class="symbol" d="M36 0 L76 20 L36 40 Z"/>
+      <path class="wire" d="M82 0 V40"/>
+      <path class="wire" d="M82 20 H120"/>
+    </g>
+
+    <g id="opamp">
+      <path class="symbol" d="M0 0 L0 150 L190 75 Z"/>
+      <text class="txt" x="16" y="56">+</text>
+      <text class="txt" x="18" y="110">−</text>
+    </g>
+
+    <g id="jack">
+      <circle class="symbol" cx="40" cy="40" r="32"/>
+      <path class="wire" d="M40 8 V-15"/>
+      <path class="wire" d="M40 72 V95"/>
+      <path class="thin" d="M20 40 H60"/>
+    </g>
+  </defs>
+
+  <rect class="sheet" x="0" y="0" width="2400" height="1600"/>
+  <rect x="0" y="0" width="2400" height="1600" fill="url(#grid)" opacity="0.08"/>
+  <rect class="frame" x="35" y="35" width="2330" height="1530"/>
+
+  <text class="label" x="70" y="85">MEFX-S3 Multi Effecter 本体回路図 v2（JIS/IEC風記号）</text>
+  <text class="sub" x="70" y="112">抵抗=長方形、コンデンサ=平行板、GND/電源記号、オペアンプ三角記号、IC=ピン付き矩形。試作向けの読みやすさ優先。</text>
+  <text class="sub" x="70" y="136">コンデンサ種類: 10nF/100nF=セラミック50V、1uF=フィルム50V、10uF/47uF/100uF=電解16V以上。</text>
+
+  <!-- Power section -->
+  <text class="section" x="70" y="165">1. 電源・保護・仮想GND</text>
+  <line class="thin" x1="70" y1="175" x2="950" y2="175"/>
+
+  <g transform="translate(95 255)">
+    <use href="#jack"/>
+    <text class="ref" x="-10" y="-38">J1</text>
+    <text class="value" x="-34" y="126">DC 5.5/2.1</text>
+    <text class="small" x="-52" y="147">center=GND / sleeve=+9V</text>
+  </g>
+  <text class="net" x="105" y="220">+9V_RAW</text>
+  <path class="wire" d="M135 240 V205 H245"/>
+  <path class="wire" d="M135 350 V390"/>
+  <use href="#gnd" x="135" y="390"/>
+
+  <g transform="translate(245 185)">
+    <path class="wire" d="M0 20 H30"/>
+    <rect class="symbol" x="30" y="3" width="80" height="34" rx="4"/>
+    <path class="wire" d="M110 20 H140"/>
+    <text class="ref" x="36" y="-18">JP1/F1 opt</text>
+    <text class="value" x="30" y="62">jumper</text>
+  </g>
+  <g transform="translate(420 185)">
+    <use href="#diode-h"/>
+    <text class="ref" x="42" y="-18">D1</text>
+    <text class="value" x="30" y="62">1N5819/SS14</text>
+  </g>
+  <text class="net" x="558" y="198">+9V_PROT</text>
+  <path class="wire" d="M540 205 H650"/>
+
+  <g transform="translate(620 225)">
+    <use href="#diode-h" transform="rotate(90 60 20)"/>
+    <text class="ref" x="58" y="50">D2 opt</text>
+    <text class="value" x="28" y="70">no mount</text>
+  </g>
+  <path class="wire" d="M650 205 V225"/>
+  <path class="wire" d="M650 345 V385"/>
+  <use href="#gnd" x="650" y="385"/>
+
+  <g transform="translate(705 205)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C1</text>
+    <text class="value" x="44" y="84">100uF</text>
+  </g>
+  <path class="wire" d="M725 205 H650"/>
+  <use href="#gnd" x="725" y="325"/>
+
+  <g transform="translate(790 205)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C2</text>
+    <text class="value" x="44" y="84">100nF</text>
+  </g>
+  <path class="wire" d="M810 205 H725"/>
+  <use href="#gnd" x="810" y="325"/>
+
+  <g transform="translate(890 185)">
+    <use href="#res-h"/>
+    <text class="ref" x="40" y="-18">FB1</text>
+    <text class="value" x="22" y="62">ferrite / 10Ω</text>
+  </g>
+  <path class="wire" d="M650 205 H890"/>
+  <text class="net" x="1028" y="198">+9VA</text>
+  <path class="wire" d="M1010 205 H1140"/>
+
+  <g transform="translate(1070 225)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C3</text>
+    <text class="value" x="44" y="84">47uF</text>
+  </g>
+  <path class="wire" d="M1090 205 V225"/>
+  <use href="#gnd" x="1090" y="345"/>
+
+  <g transform="translate(1140 225)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C4</text>
+    <text class="value" x="44" y="84">100nF</text>
+  </g>
+  <path class="wire" d="M1160 205 V225"/>
+  <use href="#gnd" x="1160" y="345"/>
+
+  <rect class="ic" x="1260" y="170" width="170" height="95"/>
+  <text class="ref" x="1280" y="200">U2</text>
+  <text class="txt" x="1308" y="202">5V Buck</text>
+  <text class="small" x="1285" y="228">IN +9V_PROT</text>
+  <text class="small" x="1285" y="248">OUT +5V</text>
+  <path class="wire" d="M650 205 H1260"/>
+  <path class="wire" d="M1430 225 H1515"/>
+  <text class="net" x="1450" y="218">+5V</text>
+  <g transform="translate(1485 245)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C5</text>
+    <text class="value" x="44" y="84">100uF</text>
+  </g>
+  <path class="wire" d="M1505 225 V245"/>
+  <use href="#gnd" x="1505" y="365"/>
+
+  <rect class="ic" x="1640" y="170" width="170" height="95"/>
+  <text class="ref" x="1660" y="200">U3</text>
+  <text class="txt" x="1688" y="202">3.3V LDO</text>
+  <text class="small" x="1665" y="228">IN +5V</text>
+  <text class="small" x="1665" y="248">OUT +3V3</text>
+  <path class="wire" d="M1515 225 H1640"/>
+  <path class="wire" d="M1810 225 H1900"/>
+  <text class="net" x="1825" y="218">+3V3</text>
+  <g transform="translate(1870 245)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C7</text>
+    <text class="value" x="44" y="84">10uF</text>
+  </g>
+  <path class="wire" d="M1890 225 V245"/>
+  <use href="#gnd" x="1890" y="365"/>
+
+  <rect class="ic" x="1260" y="315" width="170" height="95"/>
+  <text class="ref" x="1280" y="345">U4</text>
+  <text class="txt" x="1308" y="347">TLE2426</text>
+  <text class="small" x="1285" y="373">IN +9VA/GND</text>
+  <text class="small" x="1285" y="393">OUT VBIAS</text>
+  <path class="wire" d="M1140 205 V362 H1260"/>
+  <path class="wire" d="M1430 375 H1535"/>
+  <text class="net" x="1450" y="368">VBIAS_4V5</text>
+  <g transform="translate(1510 395)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C9A</text>
+    <text class="value" x="44" y="84">47uF</text>
+  </g>
+  <path class="wire" d="M1530 375 V395"/>
+  <use href="#gnd" x="1530" y="515"/>
+  <g transform="translate(1590 395)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="65">C9B</text>
+    <text class="value" x="44" y="84">100nF</text>
+  </g>
+  <path class="wire" d="M1610 375 H1530"/>
+  <use href="#gnd" x="1610" y="515"/>
+
+  <!-- Input and ADC -->
+  <text class="section" x="70" y="500">2. 入力プリアンプ・PCM1808 ADC</text>
+  <line class="thin" x1="70" y1="510" x2="1110" y2="510"/>
+
+  <g transform="translate(100 655)">
+    <use href="#jack"/>
+    <text class="ref" x="4" y="-38">J2</text>
+    <text class="value" x="-4" y="126">INPUT 6.35mm</text>
+  </g>
+  <path class="wire" d="M140 640 V585 H210"/>
+  <text class="net" x="160" y="575">IN_TIP</text>
+  <path class="wire" d="M140 750 V790"/>
+  <use href="#gnd" x="140" y="790"/>
+
+  <g transform="translate(190 585)">
+    <use href="#res-v"/>
+    <text class="ref" x="45" y="60">R1</text>
+    <text class="value" x="45" y="80">1M</text>
+  </g>
+  <path class="wire" d="M210 585 H260"/>
+  <use href="#gnd" x="210" y="705"/>
+
+  <g transform="translate(260 565)">
+    <use href="#cap-h"/>
+    <text class="ref" x="42" y="-12">C10</text>
+    <text class="value" x="36" y="62">100nF</text>
+  </g>
+  <text class="net" x="390" y="578">IN_AC</text>
+
+  <g transform="translate(420 585)">
+    <use href="#res-v"/>
+    <text class="ref" x="45" y="60">R2</text>
+    <text class="value" x="45" y="80">1M</text>
+  </g>
+  <path class="wire" d="M440 585 H380"/>
+  <path class="wire" d="M440 705 V735"/>
+  <text class="net" x="410" y="758">VBIAS</text>
+
+  <g transform="translate(500 565)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R3</text>
+    <text class="value" x="42" y="62">1k</text>
+  </g>
+  <path class="wire" d="M380 585 H500"/>
+  <path class="wire" d="M620 585 H675"/>
+
+  <g transform="translate(635 610)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="64">C11</text>
+    <text class="value" x="44" y="84">220pF</text>
+  </g>
+  <path class="wire" d="M655 585 V610"/>
+  <path class="wire" d="M655 730 H440"/>
+  <text class="net" x="585" y="748">VBIAS</text>
+
+  <g transform="translate(730 520)">
+    <use href="#opamp"/>
+    <text class="ref" x="72" y="-18">U1A</text>
+    <text class="value" x="54" y="175">TL072A gain=2</text>
+  </g>
+  <path class="wire" d="M675 585 H730"/>
+  <path class="wire" d="M730 625 H705 V780 H920 V595 H920"/>
+  <path class="wire" d="M920 595 H910"/>
+  <g transform="translate(760 760)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R4</text>
+    <text class="value" x="34" y="62">100k</text>
+  </g>
+  <path class="wire" d="M880 780 H920"/>
+  <g transform="translate(745 800)">
+    <path class="wire" d="M0 20 H48"/>
+    <path class="wire" d="M48 8 V32"/>
+    <path class="wire" d="M72 8 V32"/>
+    <path class="wire" d="M72 20 H120"/>
+    <text class="ref" x="42" y="58">C12</text>
+    <text class="value" x="38" y="76">47pF</text>
+  </g>
+  <g transform="translate(690 650)">
+    <use href="#res-v"/>
+    <text class="ref" x="-40" y="60">R5</text>
+    <text class="value" x="-48" y="80">100k</text>
+  </g>
+  <path class="wire" d="M710 650 H730"/>
+  <path class="wire" d="M710 770 V820 H655"/>
+  <text class="net" x="620" y="842">VBIAS</text>
+
+  <path class="wire" d="M920 595 H985"/>
+  <text class="net" x="934" y="585">PRE_OUT</text>
+
+  <g transform="translate(985 575)">
+    <use href="#cap-h"/>
+    <text class="ref" x="42" y="-12">C13</text>
+    <text class="value" x="44" y="62">1uF</text>
+  </g>
+  <g transform="translate(1125 575)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R6</text>
+    <text class="value" x="42" y="62">100Ω</text>
+  </g>
+  <g transform="translate(1215 620)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="64">C14</text>
+    <text class="value" x="44" y="84">10nF</text>
+  </g>
+  <path class="wire" d="M1235 595 V620"/>
+  <use href="#gnd" x="1235" y="740"/>
+
+  <rect class="ic" x="1320" y="520" width="270" height="300"/>
+  <text class="ref" x="1345" y="552">U5</text>
+  <text class="txt" x="1390" y="554">PCM1808 ADC module</text>
+  <text class="small" x="1345" y="590">LIN</text>
+  <text class="small" x="1345" y="630">RIN</text>
+  <text class="small" x="1345" y="670">SCKI/MCLK</text>
+  <text class="small" x="1345" y="710">BCK</text>
+  <text class="small" x="1345" y="750">LRCK</text>
+  <text class="small" x="1345" y="790">DOUT</text>
+  <text class="small" x="1495" y="590">VCC 5V</text>
+  <text class="small" x="1495" y="615">VDD 3.3V</text>
+  <text class="small" x="1495" y="640">AGND/DGND</text>
+  <path class="wire" d="M1245 595 H1320"/>
+  <text class="net" x="1260" y="585">ADC_L</text>
+
+  <rect class="ic" x="100" y="860" width="195" height="95"/>
+  <text class="ref" x="120" y="890">U7</text>
+  <text class="txt" x="158" y="892">Mic Amp</text>
+  <text class="small" x="122" y="920">MAX4466/MAX9814</text>
+  <text class="small" x="122" y="940">analog OUT</text>
+  <g transform="translate(330 890)">
+    <use href="#cap-h"/>
+    <text class="ref" x="42" y="-12">C17</text>
+    <text class="value" x="44" y="62">1uF</text>
+  </g>
+  <g transform="translate(475 890)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R7</text>
+    <text class="value" x="42" y="62">100Ω</text>
+  </g>
+  <g transform="translate(585 935)">
+    <use href="#cap-v"/>
+    <text class="ref" x="42" y="64">C18</text>
+    <text class="value" x="44" y="84">10nF</text>
+  </g>
+  <path class="wire" d="M295 910 H330"/>
+  <path class="wire" d="M595 910 H1290 V630 H1320"/>
+  <path class="wire" d="M605 910 V935"/>
+  <use href="#gnd" x="605" y="1055"/>
+
+  <!-- ESP32 and I2S -->
+  <text class="section" x="1660" y="500">3. ESP32-S3 / I2S / 制御</text>
+  <line class="thin" x1="1660" y1="510" x2="2280" y2="510"/>
+
+  <rect class="ic" x="1740" y="550" width="300" height="310"/>
+  <text class="ref" x="1765" y="585">U8</text>
+  <text class="txt" x="1810" y="587">ESP32-S3 Dev Board</text>
+  <text class="small" x="1765" y="625">GPIO17 MCLK</text>
+  <text class="small" x="1765" y="665">GPIO4 BCLK</text>
+  <text class="small" x="1765" y="705">GPIO5 LRCK</text>
+  <text class="small" x="1765" y="745">GPIO6 ADC_DIN</text>
+  <text class="small" x="1765" y="785">GPIO16 DAC_DOUT</text>
+  <text class="small" x="1765" y="825">GPIO9 FOOTSW</text>
+
+  <g transform="translate(1600 605)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R20</text>
+    <text class="value" x="18" y="62">jumper / 33Ω opt</text>
+  </g>
+  <path class="wire" d="M1590 670 H1530"/>
+  <text class="net" x="1520" y="660">MCLK</text>
+  <path class="wire" d="M1720 625 H1740"/>
+  <path class="wire" d="M1530 670 H1590"/>
+
+  <g transform="translate(1600 645)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R21</text>
+    <text class="value" x="18" y="62">jumper / 33Ω opt</text>
+  </g>
+  <path class="wire" d="M1530 710 H1600"/>
+  <text class="net" x="1520" y="700">BCLK</text>
+  <path class="wire" d="M1720 665 H1740"/>
+
+  <g transform="translate(1600 685)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R22</text>
+    <text class="value" x="18" y="62">jumper / 33Ω opt</text>
+  </g>
+  <path class="wire" d="M1530 750 H1600"/>
+  <text class="net" x="1516" y="740">LRCK</text>
+  <path class="wire" d="M1720 705 H1740"/>
+
+  <g transform="translate(1600 765)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R23</text>
+    <text class="value" x="18" y="62">jumper / 33Ω opt</text>
+  </g>
+  <path class="wire" d="M1590 790 H1590"/>
+  <path class="wire" d="M1590 790 H1320"/>
+  <text class="net" x="1515" y="780">ADC_DOUT</text>
+  <path class="wire" d="M1720 745 H1740"/>
+
+  <!-- DAC output path -->
+  <text class="section" x="70" y="1110">4. PCM5102A DAC・直接出力</text>
+  <line class="thin" x1="70" y1="1120" x2="1250" y2="1120"/>
+
+  <rect class="ic" x="100" y="1180" width="255" height="230"/>
+  <text class="ref" x="125" y="1215">U6</text>
+  <text class="txt" x="170" y="1217">PCM5102A DAC module</text>
+  <text class="small" x="125" y="1255">BCK</text>
+  <text class="small" x="125" y="1290">LRCK</text>
+  <text class="small" x="125" y="1325">DIN</text>
+  <text class="small" x="125" y="1360">SCK -> GND</text>
+  <text class="small" x="125" y="1390">XMT -> R30 10k -> +3V3</text>
+  <text class="small" x="280" y="1255">LOUT</text>
+
+  <path class="wire" d="M1530 710 V1248 H100"/>
+  <path class="wire" d="M1530 750 V1283 H100"/>
+  <path class="wire" d="M2040 785 H2110 V1320 H355"/>
+  <g transform="translate(2060 765)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R24</text>
+    <text class="value" x="18" y="62">jumper / 33Ω opt</text>
+  </g>
+
+  <path class="wire" d="M355 1255 H1015 V1270 H1065"/>
+  <text class="small" x="420" y="1232">PCM5102A LOUTを直接出力。C20/C22/TL072Bは最小構成では使わない。</text>
+  <text class="small" x="420" y="1262">TL072B未使用処理: IN+ -> VBIAS、IN- -> OUT。</text>
+  <g transform="translate(1065 1250)">
+    <use href="#res-h"/>
+    <text class="ref" x="42" y="-12">R35</text>
+    <text class="value" x="42" y="62">100Ω</text>
+  </g>
+  <g transform="translate(1165 1290)">
+    <use href="#res-v"/>
+    <text class="ref" x="45" y="60">R36</text>
+    <text class="value" x="45" y="80">100k</text>
+  </g>
+  <path class="wire" d="M1185 1270 V1290"/>
+  <use href="#gnd" x="1185" y="1410"/>
+
+  <g transform="translate(1270 1240)">
+    <use href="#jack"/>
+    <text class="ref" x="5" y="-38">J3</text>
+    <text class="value" x="-8" y="126">OUTPUT 6.35mm</text>
+  </g>
+  <path class="wire" d="M1185 1270 H1310 V1225"/>
+  <path class="wire" d="M1310 1335 V1375"/>
+  <use href="#gnd" x="1310" y="1375"/>
+
+  <!-- Foot switch -->
+  <text class="section" x="1510" y="1110">5. フットスイッチ</text>
+  <line class="thin" x1="1510" y1="1120" x2="2280" y2="1120"/>
+  <path class="wire" d="M2040 825 H2110 V1160"/>
+  <path class="wire" d="M1730 1230 V1160 H2110"/>
+  <text class="net" x="1995" y="1150">GPIO9</text>
+  <g transform="translate(1730 1080)">
+    <use href="#pwr"/>
+    <text class="net" x="-32" y="-8">+3V3</text>
+  </g>
+  <g transform="translate(1710 1110)">
+    <use href="#res-v"/>
+    <text class="ref" x="45" y="60">R40</text>
+    <text class="value" x="45" y="80">10k</text>
+  </g>
+  <g transform="translate(2140 1130)">
+    <path class="wire" d="M0 30 H42"/>
+    <path class="wire" d="M78 30 H120"/>
+    <path class="thin" d="M42 30 L78 8"/>
+    <text class="ref" x="40" y="-22">SW1</text>
+    <text class="value" x="12" y="70">momentary NO</text>
+  </g>
+  <path class="wire" d="M2110 1160 H2140"/>
+  <path class="wire" d="M2260 1160 V1205"/>
+  <use href="#gnd" x="2260" y="1205"/>
+  <g transform="translate(2070 1190)">
+    <use href="#cap-v"/>
+    <text class="ref" x="-50" y="62">C30</text>
+    <text class="value" x="-60" y="82">100nF</text>
+  </g>
+  <path class="wire" d="M2090 1190 V1160"/>
+  <use href="#gnd" x="2090" y="1310"/>
+
+  <!-- Title block -->
+  <rect class="frame" x="1650" y="1410" width="690" height="115"/>
+  <line class="thin" x1="1650" y1="1450" x2="2340" y2="1450"/>
+  <line class="thin" x1="1850" y1="1410" x2="1850" y2="1525"/>
+  <line class="thin" x1="2070" y1="1410" x2="2070" y2="1525"/>
+  <text class="box-title" x="1665" y="1438">図名</text>
+  <text class="txt" x="1865" y="1438">MEFX-S3 本体回路図 v2</text>
+  <text class="box-title" x="1665" y="1482">形式</text>
+  <text class="txt" x="1865" y="1482">JIS/IEC風シンボル、試作用</text>
+  <text class="box-title" x="1665" y="1512">注意</text>
+  <text class="small" x="1865" y="1512">PCM1808 MCLK/SCKI必須。SW=GPIO9。GPIO0は使わない。</text>
+</svg>

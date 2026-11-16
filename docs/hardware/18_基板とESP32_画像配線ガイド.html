@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; img-src 'self' file: data: blob:; script-src 'self' file:; style-src 'self' file: 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>MEFX-S3 | 基板とESP32の画像配線ガイド</title>
+  <link rel="stylesheet" href="generated/esp32-wiring-guide/style.css">
+  <script defer src="generated/esp32-wiring-guide/wiring-data.js"></script>
+  <script defer src="generated/esp32-wiring-guide/scene.js"></script>
+  <script defer src="generated/esp32-wiring-guide/guide.js"></script>
+</head>
+<body>
+<header><div class="header-inner"><div><p class="eyebrow">MEFX-S3 / 組立ガイド 18</p><h1>基板とESP32をつなぐ</h1></div><button id="print" class="secondary" type="button">図を印刷</button></div></header>
+<main>
+  <p><strong>今回の取り付け方：ESP32だけソケットへ挿し、外付け部品は線で接続します。</strong> <a href="19_外付け端子の配線図.html">楽器・アンプ・電源・スイッチの配線図19を開く</a>。以下の「線でつなぐ」はESP32を離す場合の参考表示で、今回は使いません。</p>
+  <div class="safety"><strong>配線中はUSBと9Vを両方抜く。</strong><span>9VをESP32へ直接つながない。写真の向きは確認済み、通電の安全確認はまだです。</span></div>
+  <nav class="tabs" aria-label="図の切り替え" role="tablist">
+    <button id="tab-photo" type="button" role="tab" aria-selected="true" aria-controls="panel-photo">実物写真</button>
+    <button id="tab-pins" type="button" role="tab" aria-selected="false" aria-controls="panel-pins">穴と端子の対応</button>
+    <button id="tab-three" type="button" role="tab" aria-selected="false" aria-controls="panel-three">3D取り付け</button>
+    <button id="tab-external" type="button" role="tab" aria-selected="false" aria-controls="panel-external">周辺の配線</button>
+  </nav>
+  <section id="panel-photo" role="tabpanel" aria-labelledby="tab-photo">
+    <div class="section-heading"><h2>あなたの基板で位置を確認</h2><p>部品面を上・USBを左。写真は加工せず、上から目印を重ねています。</p></div>
+    <div class="photo-layout"><div class="photo-frame" id="photo-view"></div>
+      <aside class="photo-aside">
+        <h3>今、つまずいている場所</h3><button type="button" class="primary" id="go-pins">ESP32の接続先を見る</button>
+        <p>赤いESP32の下に、U3の20穴×2列があります。</p>
+        <h3>今回はソケットで取り付ける</h3>
+        <p><b>ソケットで載せる</b><br>2本の1×20雌ソケットで、対応する端子へそのまま接続。信号線を別に足す必要はありません。</p>
+        <p>R-78やジャックなどは、配線図19のとおり線でつなぎます。ESP32の信号線を別に配線する必要はありません。</p>
+        <p class="caution">足を穴へ差して置くだけでは接続完了ではありません。ソケットを基板にはんだ付けする必要があります。この写真では、そのはんだ・挿入状態・電圧は判定できません。</p>
+      </aside>
+    </div>
+  </section>
+  <section id="panel-pins" role="tabpanel" aria-labelledby="tab-pins" hidden>
+    <div class="section-heading"><h2>同じ番号ではなく、同じ接続先へ</h2><p>常に部品面から見た図。USB側から数えます。「U3の穴番号」と「ESP32のGPIO番号」は別です。</p></div>
+    <div class="method-control" role="group" aria-label="接続方法"><button type="button" id="method-socket" aria-pressed="true">ソケットで載せる</button><button type="button" id="method-wire" aria-pressed="false">線でつなぐ</button></div>
+    <p id="method-note" class="method-note">上下の図を分けて表示していますが、実際はESP32をU3の真上に載せます。上下を反転していません。</p>
+    <div class="pin-layout"><div class="pin-visual"><div id="pin-map"></div><div id="pin-closeup" class="pin-closeup"></div><p class="small">灰色＝基板では未接続。ソケット使用時は全40本を差し込みます。色は図中の識別用です。</p></div>
+      <aside class="connection-detail" id="connection-detail" aria-live="polite"></aside>
+    </div>
+    <div id="signal-list" class="signal-list" role="group" aria-label="接続を選択"></div>
+    <div class="caution"><b>ESP32の3V3端子は追加配線しません。</b> 基板のU4が作る+3V3_LOGICと、ESP32基板の3.3V出力を短絡しないでください。</div>
+  </section>
+  <section id="panel-three" role="tabpanel" aria-labelledby="tab-three" hidden>
+    <div class="section-heading"><h2>上下の重なりを確認</h2><p>設計座標に基づく簡略3D。部品の外形・ソケットの高さは模式表現です。</p></div>
+    <div class="three-controls"><label for="explode">ESP32を持ち上げる <output id="explode-value">18 mm</output><input id="explode" type="range" min="0" max="35" value="18" step="1"></label><div class="view-buttons"><button id="top-view" type="button">真上</button><button id="oblique-view" type="button">斜め</button><button id="reset-view" type="button" title="表示を元に戻す" aria-label="表示を元に戻す">↺</button></div></div>
+    <div id="three-view" class="three-view" aria-label="基板、2本のソケット、ESP32の3D取り付け図"></div>
+    <p id="three-status" class="small" role="status">ドラッグで回転、ホイールまたはピンチで拡大。USBは左、アンテナは右です。</p>
+    <div class="model-key"><span><i class="key-green"></i>基板</span><span><i class="key-black"></i>雌ソケット2本</span><span><i class="key-red"></i>ESP32</span><span>水色の破線＝まっすぐ挿す位置</span></div>
+  </section>
+  <section id="panel-external" role="tabpanel" aria-labelledby="tab-external" hidden>
+    <div class="section-heading"><h2>周辺は、1か所ずつ</h2><p>4本足端子台は使わない直配線。最初はU5とJ1だけで、ESP32なしの電源確認です。</p></div>
+    <div class="external-layout"><div id="board-map"></div><aside><label for="external-select">見る部品</label><select id="external-select"><option value="U5">U5 / R-78 5V電源</option><option value="J1">J1 / 9V入力</option><option value="J2">J2 / INPUT</option><option value="J5">J5 / OUTPUT</option><option value="J4">J4 / 押しボタン</option><option value="J3">J3 / マイク（最後）</option></select><div id="external-detail" aria-live="polite"></div></aside></div>
+  </section>
+  <section class="before-power"><h2>電源を入れる前の停止ポイント</h2><ol><li>電源OFFで、はんだの橋渡し・端子ずれ・極性を確認。</li><li><b>ESP32を外した状態で</b>9Vを供給し、GND基準でU3-1が約5V、U4出力が約3.3Vか測定。異常・発熱があれば電源を抜く。</li><li>9Vを抜いてからESP32を接続。USBと外部電源の同時接続は避ける。書込みはESP32を基板から外してUSB単独で行う。</li></ol><p>図が示すのは設計上の接続です。現物の導通・電圧・音出しが正常と確認できるまでは、組立完了とは扱いません。</p></section>
+  <details class="sources"><summary>根拠と確認範囲</summary><p>使用データ：mefx_s3.kicad_pcb、07の全パッド接続一覧、現行audio_io.c / switch_control.c、ユーザー提供写真。</p><p><a href="https://github.com/Freenove/Freenove_ESP32_S3_WROOM_Board_Lite/blob/main/ESP32S3_Lite_Pinout.png" target="_blank" rel="noreferrer">Freenove公式ピン配置</a> · <a href="generated/esp32-wiring-guide/検証記録.txt">ローカル照合結果</a></p><p>実機未確認：裏面はんだ、端子の導通、電源電圧、音声、ソケット高さ。3Dは製造・干渉検証用モデルではありません。</p><code id="pcb-hash"></code></details>
+</main>
+<noscript>このガイドはJavaScriptを使用します。画像版も同じgenerated/esp32-wiring-guideフォルダに保存します。</noscript>
+</body>
+</html>

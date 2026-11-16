@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MEFX-S3 組立・配線ガイド 06</title>
+<style>
+  :root{--ink:#172126;--muted:#526169;--line:#b9c6cc;--blue:#156a8a;--green:#087443;--red:#aa2f25;--paper:#fff;--bg:#eef2f3}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.65}
+  main{max-width:1100px;margin:auto;background:var(--paper);padding:32px 38px 70px}h1{font-size:28px;margin:0}h2{font-size:20px;border-bottom:2px solid var(--blue);padding-bottom:5px;margin-top:34px}
+  h3{font-size:16px;margin:20px 0 6px}.lead{color:var(--muted)}.danger{border-left:6px solid var(--red);background:#fff2f0;padding:12px 16px;font-weight:700}
+  .ok{border-left:6px solid var(--green);background:#edf9f3;padding:12px 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  table{width:100%;border-collapse:collapse;font-size:14px}th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{background:#e7eff2}
+  code{background:#edf1f3;padding:1px 4px}.diagram{overflow:auto;border:1px solid var(--line);padding:12px;background:#fafcfc}
+  ol li,ul li{margin:5px 0}.tag{display:inline-block;border-radius:4px;padding:1px 6px;color:#fff;font-weight:700;font-size:12px}.pwr{background:#b52f24}.gnd{background:#222}.sig{background:#156a8a}
+  .check li{list-style:"□  "}.small{font-size:12px;color:var(--muted)}
+  @media(max-width:760px){main{padding:20px 14px}.grid{grid-template-columns:1fr}table{font-size:12px}}
+  @media print{body{background:#fff}main{max-width:none;padding:10mm}.no-print{display:none}h2{break-after:avoid}.diagram,table{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<h1>MEFX-S3 組立・配線ガイド 06</h1>
+<p class="lead">正式PCB/PCBA 07とJLC3DPケース07を、部品到着後そのまま組み立てるための資料です。現物ケースでは、INPUT/OUTPUTの左右より端子台への配線を優先します。</p>
+<div class="danger">ESP32は最初から挿さないでください。9V、5V、極性、短絡を確認してから最後に挿します。</div>
+<div class="ok">現段階ではケース固定は後回し。まず基板を表向きで机上確認します。J2へつないだ方がINPUT、J5へつないだ方がOUTPUTです。</div>
+
+<h2>1. 全体配置</h2>
+<div class="diagram">
+<svg viewBox="0 0 1000 610" width="100%" role="img" aria-label="ケースと基板の配置図">
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8z" fill="#156a8a"/></marker></defs>
+  <rect x="40" y="35" width="920" height="535" rx="10" fill="#f4f7f8" stroke="#526169" stroke-width="3"/>
+  <text x="45" y="25" font-size="18">ケース上から見た配置（フタを外した状態）</text>
+  <rect x="90" y="80" width="820" height="445" fill="#176c35" stroke="#0b4721" stroke-width="3"/>
+  <text x="430" y="510" fill="white" font-size="18">PCB 150 x 90 mm</text>
+  <rect x="115" y="105" width="285" height="125" fill="#dce8ec" stroke="#172126" stroke-width="2"/>
+  <text x="205" y="165" font-size="20">ESP32-S3</text><text x="125" y="205" font-size="14">USB端子側</text>
+  <rect x="490" y="112" width="90" height="56" fill="#ffd85e" stroke="#172126"/><text x="500" y="145">U5 DC/DC</text>
+  <circle cx="590" cy="330" r="28" fill="#bde4ef" stroke="#172126"/><text x="566" y="335">U2</text>
+  <rect x="102" y="280" width="85" height="36" fill="#fff" stroke="#172126"/><text x="112" y="304">J2 INPUT</text>
+  <rect x="102" y="390" width="85" height="36" fill="#fff" stroke="#172126"/><text x="118" y="414">J3 MIC</text>
+  <rect x="462" y="468" width="105" height="36" fill="#fff" stroke="#172126"/><text x="474" y="492">J4 FOOTSW</text>
+  <rect x="800" y="290" width="95" height="36" fill="#fff" stroke="#172126"/><text x="808" y="314">J5 OUTPUT</text>
+  <rect x="420" y="92" width="70" height="36" fill="#fff" stroke="#172126"/><text x="430" y="116">J1 9V</text>
+  <circle cx="42" cy="298" r="27" fill="#ddd" stroke="#172126" stroke-width="2"/><text x="12" y="350" font-size="14">ジャック穴A 9.8mm</text>
+  <circle cx="958" cy="308" r="27" fill="#ddd" stroke="#172126" stroke-width="2"/><text x="855" y="360" font-size="14">ジャック穴B 9.8mm</text>
+  <circle cx="500" cy="568" r="24" fill="#ddd" stroke="#172126" stroke-width="2"/><text x="525" y="590" font-size="14">DC穴 8.5mm</text>
+  <line x1="70" y1="298" x2="101" y2="298" stroke="#156a8a" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="930" y1="308" x2="896" y2="308" stroke="#156a8a" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="500" y1="542" x2="455" y2="130" stroke="#156a8a" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="65" y="555" font-size="14">まずケースに固定せず、基板表向きで机上確認。ケースは音が出てから。</text>
+</svg>
+</div>
+
+<h2>2. 基板へ付ける部品</h2>
+<table>
+<thead><tr><th>場所</th><th>取り付ける物</th><th>向き・注意</th></tr></thead>
+<tbody>
+<tr><td><b>U3</b></td><td>1x20、2.54mm雌ソケット x2</td><td>2列を平行にする。ESP32のUSB端子は基板左端のUSB表示側。</td></tr>
+<tr><td><b>U5</b></td><td>R-78E5.0-1.0</td><td>左から <b>1=IN、2=GND、3=OUT</b>。逆向き禁止。</td></tr>
+<tr><td><b>J1～J5</b></td><td>KF128-2P 2.54mm端子台</td><td>線の差込口を基板外側へ向ける。</td></tr>
+</tbody></table>
+
+<h2>3. ケース部品と配線</h2>
+<p class="ok">今はケース固定せず机上で仮配線します。物理的な左/右ではなく、J2へつないだ方をINPUT、J5へつないだ方をOUTPUTとして扱います。</p>
+<table>
+<thead><tr><th>ケース部品</th><th>基板端子</th><th>接続</th></tr></thead>
+<tbody>
+<tr><td>9V DCジャック</td><td>J1</td><td><b>J1-1 <span class="tag pwr">+9V</span> → 外周</b><br><b>J1-2 <span class="tag gnd">GND</span> → 中心</b><br>3端子型のスイッチ端子は未接続。</td></tr>
+<tr><td>INPUT 6.35mm TS</td><td>J2</td><td>J2-1 → TIP（先端）<br>J2-2 → SLEEVE（根元・外周）</td></tr>
+<tr><td>エレクトレットマイク</td><td>J3</td><td>J3-1 → ＋<br>J3-2 → －/外装側</td></tr>
+<tr><td>モーメンタリーNOスイッチ</td><td>J4</td><td>J4-1/J4-2をNO接点の両端へ。極性なし。</td></tr>
+<tr><td>OUTPUT 6.35mm TS</td><td>J5</td><td>J5-1 → TIP（先端）<br>J5-2 → SLEEVE（根元・外周）</td></tr>
+</tbody></table>
+
+<div class="danger">センターマイナスです。DCジャックの中心へ+9Vを接続すると基板を破損する可能性があります。</div>
+
+<h2>4. ジャック端子の見分け方</h2>
+<div class="grid">
+<section>
+<h3>6.35mm TSジャック</h3>
+<ul><li><b>TIP</b>: プラグ先端へ触れる接点</li><li><b>SLEEVE</b>: プラグ根元・金属外周へつながる接点</li></ul>
+<p>商品によって端子位置が違うため、外見だけで決めずテスターの導通モードで確認します。</p>
+</section>
+<section>
+<h3>DCジャック</h3>
+<ul><li><b>中心端子</b>: プラグの内側へ導通 → GND</li><li><b>外周端子</b>: プラグ外側へ導通 → +9V</li><li><b>スイッチ端子</b>: 今回は未接続</li></ul>
+</section>
+</div>
+
+<h2>5. 組立順</h2>
+<ol>
+<li>JLCPCB実装部品を目視確認。</li>
+<li>ESP32を治具として雌ソケット2本を平行に合わせ、端だけ仮はんだ。</li>
+<li>傾きを直して全ピンをはんだ付けし、ESP32を抜く。</li>
+<li>U5を1=IN、2=GND、3=OUTの向きではんだ付け。</li>
+<li>J1～J5端子台を外向きにはんだ付け。</li>
+<li>ケースへインサートナット、ジャック、スイッチ、マイクを固定。</li>
+<li>AWG24撚り線で上表どおり配線。信号線とGNDは軽くねじる。</li>
+<li>ESP32なしで短絡・9V・5Vを測定。</li>
+<li>電源を切り、ESP32をUSB表示側に合わせて挿す。</li>
+<li>基板をM3x6mm、フタをM3x12mmで固定。</li>
+</ol>
+
+<h2>6. 通電前チェック</h2>
+<ul class="check">
+<li>J1-1とJ1-2が短絡していない</li>
+<li>DCプラグ外周からJ1-1へ導通する</li>
+<li>DCプラグ中心からJ1-2へ導通する</li>
+<li>INPUT/OUTPUTのTIPとSLEEVEを逆にしていない</li>
+<li>マイクの＋/－が正しい</li>
+<li>フットスイッチは離すと非導通、押すと導通</li>
+<li>U5の向きが1=IN、2=GND、3=OUT</li>
+<li>ESP32をまだ挿していない</li>
+</ul>
+
+<h2>7. 初回測定</h2>
+<table><thead><tr><th>測定場所</th><th>正常値</th></tr></thead>
+<tbody><tr><td>J1-1 → J1-2</td><td>約+9V</td></tr><tr><td>U5 pin 1 → GND</td><td>約+9V</td></tr><tr><td>U5 pin 3 → GND</td><td>約+5V</td></tr></tbody></table>
+<p class="ok">異臭、発熱、大電流がなく5Vが正常なら、電源を切ってESP32を挿します。</p>
+<p class="small">詳細テキスト版: 06_組立配線ガイド.txt</p>
+</main></body></html>

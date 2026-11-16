@@ -1,0 +1,3 @@
+PASS: 205 checks
+PCB hash; offline SVG/HTML rendering; 13 readable wire mappings; 11 diagrams; text bounds; 1440/390/320px layouts; pre-power checks and measurement guidance.
+Actual electrical assembly and operation NOT tested.
