@@ -9,7 +9,7 @@
 #include "preset_store.h"
 
 static const char *TAG = "switch";
-static const gpio_num_t FOOTSWITCH_GPIO = GPIO_NUM_0;
+static const gpio_num_t FOOTSWITCH_GPIO = GPIO_NUM_9;
 
 static void switch_task(void *arg)
 {
@@ -26,11 +26,15 @@ static void switch_task(void *arg)
                 if (held > pdMS_TO_TICKS(800)) {
                     preset.bypass = !preset.bypass;
                     ESP_LOGI(TAG, "Long press: bypass=%d", preset.bypass);
+                    ESP_ERROR_CHECK_WITHOUT_ABORT(preset_store_update_active(&preset));
                 } else {
-                    ESP_LOGI(TAG, "Short press: reapply active preset");
+                    esp_err_t err = preset_store_activate_next();
+                    if (err == ESP_OK) {
+                        ESP_LOGI(TAG, "Short press: next preset slot=%d", preset_store_active_slot());
+                    } else {
+                        ESP_LOGI(TAG, "Short press: no other saved preset");
+                    }
                 }
-                int slot;
-                preset_store_save(&preset, &slot);
             }
         }
         was_down = down;

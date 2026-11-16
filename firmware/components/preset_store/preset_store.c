@@ -13,60 +13,6 @@ static const char *NAMESPACE = "presets";
 
 static nvs_handle_t handle;
 
-static uint8_t clamp_u8(int value)
-{
-    if (value < 0) return 0;
-    if (value > 100) return 100;
-    return (uint8_t)value;
-}
-
-static bool json_string_value(const char *json, const char *key, char *out, size_t out_len)
-{
-    char pattern[32];
-    snprintf(pattern, sizeof(pattern), "\"%s\"", key);
-    const char *pos = strstr(json, pattern);
-    if (!pos) return false;
-    pos = strchr(pos + strlen(pattern), ':');
-    if (!pos) return false;
-    pos++;
-    while (*pos == ' ' || *pos == '\t') pos++;
-    if (*pos != '"') return false;
-    pos++;
-    const char *end = strchr(pos, '"');
-    if (!end) return false;
-    size_t len = (size_t)(end - pos);
-    if (len >= out_len) len = out_len - 1;
-    memcpy(out, pos, len);
-    out[len] = '\0';
-    return true;
-}
-
-static bool json_bool_value(const char *json, const char *key, bool fallback)
-{
-    char pattern[32];
-    snprintf(pattern, sizeof(pattern), "\"%s\"", key);
-    const char *pos = strstr(json, pattern);
-    if (!pos) return fallback;
-    pos = strchr(pos + strlen(pattern), ':');
-    if (!pos) return fallback;
-    pos++;
-    while (*pos == ' ' || *pos == '\t') pos++;
-    if (strncmp(pos, "true", 4) == 0) return true;
-    if (strncmp(pos, "false", 5) == 0) return false;
-    return fallback;
-}
-
-static int json_int_value(const char *json, const char *key, int fallback)
-{
-    char pattern[32];
-    snprintf(pattern, sizeof(pattern), "\"%s\"", key);
-    const char *pos = strstr(json, pattern);
-    if (!pos) return fallback;
-    pos = strchr(pos + strlen(pattern), ':');
-    if (!pos) return fallback;
-    return atoi(pos + 1);
-}
-
 esp_err_t preset_store_init(void)
 {
     return nvs_open(NAMESPACE, NVS_READWRITE, &handle);
@@ -99,7 +45,19 @@ esp_err_t preset_store_load(int slot, preset_t *preset_out)
     char key[8];
     size_t size = sizeof(*preset_out);
     snprintf(key, sizeof(key), "slot%d", slot);
-    return nvs_get_blob(handle, key, preset_out, &size);
+    preset_t candidate;
+    esp_err_t err = nvs_get_blob(handle, key, &candidate, &size);
+    if (err != ESP_OK) return err;
+    if (size != sizeof(candidate) || !memchr(candidate.name, 0, sizeof(candidate.name)) ||
+        !memchr(candidate.source, 0, sizeof(candidate.source)) ||
+        !memchr(candidate.created_at, 0, sizeof(candidate.created_at)) ||
+        (candidate.instrument != INSTRUMENT_GUITAR && candidate.instrument != INSTRUMENT_BASS) ||
+        (strcmp(candidate.source, "manual") && strcmp(candidate.source, "youtube"))) return ESP_ERR_INVALID_STATE;
+    const uint8_t values[] = { candidate.effects.gain, candidate.effects.tone_eq, candidate.effects.compressor,
+        candidate.effects.drive, candidate.effects.modulation, candidate.effects.delay_reverb };
+    for (size_t i = 0; i < sizeof(values); i++) if (values[i] > 100) return ESP_ERR_INVALID_STATE;
+    *preset_out = candidate;
+    return ESP_OK;
 }
 
 esp_err_t preset_store_delete(int slot)
@@ -137,46 +95,38 @@ esp_err_t preset_store_apply_active(void)
     return err == ESP_ERR_NVS_NOT_FOUND ? ESP_OK : err;
 }
 
-esp_err_t preset_from_json(const char *json, preset_t *preset_out)
+esp_err_t preset_store_activate(int slot)
 {
-    if (!json || !preset_out) return ESP_ERR_INVALID_ARG;
-
-    memset(preset_out, 0, sizeof(*preset_out));
-    char instrument[8] = "guitar";
-    if (!json_string_value(json, "name", preset_out->name, sizeof(preset_out->name))) return ESP_ERR_INVALID_ARG;
-    json_string_value(json, "instrument", instrument, sizeof(instrument));
-    preset_out->instrument = strcmp(instrument, "bass") == 0 ? INSTRUMENT_BASS : INSTRUMENT_GUITAR;
-    preset_out->bypass = json_bool_value(json, "bypass", false);
-    if (!json_string_value(json, "source", preset_out->source, sizeof(preset_out->source))) {
-        strncpy(preset_out->source, "manual", sizeof(preset_out->source) - 1);
-    }
-    json_string_value(json, "createdAt", preset_out->created_at, sizeof(preset_out->created_at));
-    preset_out->effects.gain = clamp_u8(json_int_value(json, "gain", 45));
-    preset_out->effects.tone_eq = clamp_u8(json_int_value(json, "tone_eq", 50));
-    preset_out->effects.compressor = clamp_u8(json_int_value(json, "compressor", 25));
-    preset_out->effects.drive = clamp_u8(json_int_value(json, "drive", 20));
-    preset_out->effects.modulation = clamp_u8(json_int_value(json, "modulation", 0));
-    preset_out->effects.delay_reverb = clamp_u8(json_int_value(json, "delay_reverb", 10));
+    preset_t preset;
+    ESP_RETURN_ON_ERROR(preset_store_load(slot, &preset), TAG, "load preset to activate");
+    ESP_RETURN_ON_ERROR(nvs_set_i32(handle, "active", slot), TAG, "set active preset");
+    ESP_RETURN_ON_ERROR(nvs_commit(handle), TAG, "commit active preset");
+    dsp_set_preset(&preset);
+    ESP_LOGI(TAG, "Activated slot %d: %s", slot, preset.name);
     return ESP_OK;
 }
 
-esp_err_t preset_to_json(const preset_t *preset, char *buffer, size_t buffer_len)
+esp_err_t preset_store_activate_next(void)
 {
-    if (!preset || !buffer || buffer_len == 0) return ESP_ERR_INVALID_ARG;
-    int written = snprintf(
-        buffer,
-        buffer_len,
-        "{\"instrument\":\"%s\",\"name\":\"%s\",\"effects\":{\"gain\":%u,\"tone_eq\":%u,\"compressor\":%u,\"drive\":%u,\"modulation\":%u,\"delay_reverb\":%u},\"bypass\":%s,\"createdAt\":\"%s\",\"source\":\"%s\"}",
-        preset->instrument == INSTRUMENT_BASS ? "bass" : "guitar",
-        preset->name,
-        preset->effects.gain,
-        preset->effects.tone_eq,
-        preset->effects.compressor,
-        preset->effects.drive,
-        preset->effects.modulation,
-        preset->effects.delay_reverb,
-        preset->bypass ? "true" : "false",
-        preset->created_at,
-        preset->source[0] ? preset->source : "manual");
-    return written > 0 && written < (int)buffer_len ? ESP_OK : ESP_ERR_NO_MEM;
+    const int current = preset_store_active_slot();
+    for (int offset = 1; offset <= PRESET_STORE_MAX; offset++) {
+        const int slot = (current + offset) % PRESET_STORE_MAX;
+        preset_t preset;
+        if (preset_store_load(slot, &preset) == ESP_OK) {
+            return preset_store_activate(slot);
+        }
+    }
+    return ESP_ERR_NOT_FOUND;
+}
+
+esp_err_t preset_store_update_active(const preset_t *preset)
+{
+    if (preset == NULL) return ESP_ERR_INVALID_ARG;
+    const int slot = preset_store_active_slot();
+    char key[8];
+    snprintf(key, sizeof(key), "slot%d", slot);
+    ESP_RETURN_ON_ERROR(nvs_set_blob(handle, key, preset, sizeof(*preset)), TAG, "update active preset");
+    ESP_RETURN_ON_ERROR(nvs_commit(handle), TAG, "commit active preset update");
+    dsp_set_preset(preset);
+    return ESP_OK;
 }

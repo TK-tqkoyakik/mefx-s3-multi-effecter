@@ -28,6 +28,60 @@
         "delay_reverb": { "type": "integer", "minimum": 0, "maximum": 100 }
       }
     },
+    "ir": {
+      "type": "object",
+      "required": ["enabled", "source", "name", "mix", "lengthMs", "sampleRate"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "source": {
+          "type": "string",
+          "enum": ["none", "generated", "library", "imported"]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "mix": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "lengthMs": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "sampleRate": { "type": "integer", "minimum": 8000, "maximum": 192000 },
+        "profile": {
+          "type": "object",
+          "required": ["brightness", "space", "saturation", "dynamics"],
+          "additionalProperties": false,
+          "properties": {
+            "brightness": { "type": "number", "minimum": 0, "maximum": 1 },
+            "space": { "type": "number", "minimum": 0, "maximum": 1 },
+            "saturation": { "type": "number", "minimum": 0, "maximum": 1 },
+            "dynamics": { "type": "number", "minimum": 0, "maximum": 1 },
+            "low": { "type": "number", "minimum": 0, "maximum": 1 },
+            "lowMid": { "type": "number", "minimum": 0, "maximum": 1 },
+            "highMid": { "type": "number", "minimum": 0, "maximum": 1 },
+            "high": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "filePath": { "type": "string", "maxLength": 1024 },
+        "createdFromUrl": { "type": "string", "maxLength": 2048 },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 240 },
+          "maxItems": 12
+        }
+      }
+    },
+    "deviceTone": {
+      "type": "object",
+      "required": ["cabinet", "presence", "resonance", "air", "irMix"],
+      "additionalProperties": false,
+      "properties": {
+        "cabinet": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "presence": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "resonance": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "air": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "irMix": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
     "bypass": {
       "type": "boolean"
     },

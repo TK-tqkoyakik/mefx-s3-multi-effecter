@@ -1,6 +1,7 @@
 #include "audio_io.h"
 
 #include "ble_control.h"
+#include "driver/gpio.h"
 #include "driver/i2s_std.h"
 #include "dsp.h"
 #include "esp_check.h"
@@ -17,25 +18,36 @@ static i2s_chan_handle_t tx_chan;
 #define I2S_ADC_BCLK GPIO_NUM_4
 #define I2S_ADC_WS GPIO_NUM_5
 #define I2S_ADC_DIN GPIO_NUM_6
-#define I2S_DAC_BCLK GPIO_NUM_7
-#define I2S_DAC_WS GPIO_NUM_15
+#define I2S_MCLK GPIO_NUM_17
 #define I2S_DAC_DOUT GPIO_NUM_16
+#define CODEC_RESET GPIO_NUM_15
+
+static esp_err_t init_codec_reset(void)
+{
+    const gpio_config_t config = {
+        .pin_bit_mask = 1ULL << CODEC_RESET,
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE,
+    };
+    ESP_RETURN_ON_ERROR(gpio_config(&config), TAG, "configure CS4270 reset");
+    return gpio_set_level(CODEC_RESET, 0);
+}
 
 static esp_err_t init_i2s(void)
 {
-    i2s_chan_config_t rx_chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
-    i2s_chan_config_t tx_chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_1, I2S_ROLE_MASTER);
-    ESP_RETURN_ON_ERROR(i2s_new_channel(&rx_chan_cfg, NULL, &rx_chan), TAG, "create i2s rx");
-    ESP_RETURN_ON_ERROR(i2s_new_channel(&tx_chan_cfg, &tx_chan, NULL), TAG, "create i2s tx");
+    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
+    ESP_RETURN_ON_ERROR(i2s_new_channel(&chan_cfg, &tx_chan, &rx_chan), TAG, "create i2s full duplex");
 
-    i2s_std_config_t rx_std_cfg = {
+    i2s_std_config_t std_cfg = {
         .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(48000),
         .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO),
         .gpio_cfg = {
-            .mclk = I2S_GPIO_UNUSED,
+            .mclk = I2S_MCLK,
             .bclk = I2S_ADC_BCLK,
             .ws = I2S_ADC_WS,
-            .dout = I2S_GPIO_UNUSED,
+            .dout = I2S_DAC_DOUT,
             .din = I2S_ADC_DIN,
             .invert_flags = {
                 .mclk_inv = false,
@@ -44,28 +56,12 @@ static esp_err_t init_i2s(void)
             },
         },
     };
+    std_cfg.clk_cfg.mclk_multiple = I2S_MCLK_MULTIPLE_256;
 
-    i2s_std_config_t tx_std_cfg = {
-        .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(48000),
-        .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_STEREO),
-        .gpio_cfg = {
-            .mclk = I2S_GPIO_UNUSED,
-            .bclk = I2S_DAC_BCLK,
-            .ws = I2S_DAC_WS,
-            .dout = I2S_DAC_DOUT,
-            .din = I2S_GPIO_UNUSED,
-            .invert_flags = {
-                .mclk_inv = false,
-                .bclk_inv = false,
-                .ws_inv = false,
-            },
-        },
-    };
-
-    ESP_RETURN_ON_ERROR(i2s_channel_init_std_mode(rx_chan, &rx_std_cfg), TAG, "init i2s rx");
-    ESP_RETURN_ON_ERROR(i2s_channel_init_std_mode(tx_chan, &tx_std_cfg), TAG, "init i2s tx");
-    ESP_RETURN_ON_ERROR(i2s_channel_enable(rx_chan), TAG, "enable i2s rx");
+    ESP_RETURN_ON_ERROR(i2s_channel_init_std_mode(tx_chan, &std_cfg), TAG, "init i2s tx");
+    ESP_RETURN_ON_ERROR(i2s_channel_init_std_mode(rx_chan, &std_cfg), TAG, "init i2s rx");
     ESP_RETURN_ON_ERROR(i2s_channel_enable(tx_chan), TAG, "enable i2s tx");
+    ESP_RETURN_ON_ERROR(i2s_channel_enable(rx_chan), TAG, "enable i2s rx");
     return ESP_OK;
 }
 
@@ -78,7 +74,7 @@ static void audio_task(void *arg)
     int32_t output[BLOCK_FRAMES];
     audio_telemetry_t telemetry;
 
-    ESP_LOGI(TAG, "I2S pin map v1: ADC BCLK=4 WS=5 DIN=6, DAC BCLK=7 WS=15 DOUT=16");
+    ESP_LOGI(TAG, "I2S pin map v1: MCLK=17 BCLK=4 WS=5 ADC_DIN=6 DAC_DOUT=16");
 
     while (true) {
         size_t bytes_read = 0;
@@ -107,7 +103,13 @@ static void audio_task(void *arg)
 
 esp_err_t audio_io_start(void)
 {
+    ESP_RETURN_ON_ERROR(init_codec_reset(), TAG, "hold CS4270 reset");
     ESP_RETURN_ON_ERROR(init_i2s(), TAG, "init i2s");
+    vTaskDelay(pdMS_TO_TICKS(2));
+    ESP_RETURN_ON_ERROR(gpio_set_level(CODEC_RESET, 1), TAG, "release CS4270 reset");
+    // CS4270 stand-alone single-speed startup is about 21.8 ms at 48 kHz.
+    vTaskDelay(pdMS_TO_TICKS(25));
+    ESP_LOGI(TAG, "CS4270 stand-alone I2S slave ready; reset GPIO=15");
     BaseType_t ok = xTaskCreatePinnedToCore(audio_task, "audio", 4096, NULL, 18, NULL, 1);
     return ok == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
 }

@@ -11,10 +11,40 @@ export type EffectKey =
 
 export type Effects = Record<EffectKey, number>;
 
+export type ImpulseResponseSource = "none" | "generated" | "library" | "imported";
+
+export type ImpulseResponseSettings = {
+  enabled: boolean;
+  source: ImpulseResponseSource;
+  name: string;
+  mix: number;
+  lengthMs: number;
+  sampleRate: number;
+  profile?: {
+    brightness: number;
+    space: number;
+    saturation: number;
+    dynamics: number;
+  };
+  filePath?: string;
+  createdFromUrl?: string;
+  notes?: string[];
+};
+
+export type DeviceTone = {
+  cabinet: number;
+  presence: number;
+  resonance: number;
+  air: number;
+  irMix: number;
+};
+
 export type Preset = {
   instrument: Instrument;
   name: string;
   effects: Effects;
+  ir?: ImpulseResponseSettings;
+  deviceTone?: DeviceTone;
   bypass: boolean;
   createdAt: string;
   source: PresetSource;
