@@ -1,0 +1,179 @@
+MEFX-S3 配布メタデータとファイル整理 07
+======================================
+
+この資料の範囲
+--------------
+配布内容を追跡する方法と、整理候補の分類を記録する。
+削除・移動・Git履歴変更・commit・push・ブランチ作成は実施しない。
+既存の未コミット変更は保持する。整理候補は削除の許可や実施記録ではない。
+
+版番号を混同しない
+------------------
+- docs/pcb-assembly/07_order_package/ が資料上の現行製造データ。
+  Gerber/BOM/CPLは07の同一版をそろえる。旧04/05/06を再発注に使わない。
+- docs/pcb-assembly/04_order_package/、05_order_package/、06_order_package/、
+  04_README.txt、旧DRC/ERC/BOM/CPLなどは保存履歴。削除候補としない。
+  旧版本文の「正式」「発注に使う」等を現在の指示として読まない。
+- docs/kicad/mefx_s3.kicad_pcb のタイトルと基板シルクには
+  「MEFX-S3 JLCPCB PCBA 04」「MEFX-S3 PCBA 04」が残っている。
+  シルクの04だけで製造データ07との対応・到着基板の版を判定しない。
+  注文記録、Gerber/BOM/CPL、部品配置と現物を照合する。
+- アプリ版0.1.0/0.1.1、製造データ07、資料の連番07は別の番号。
+- output/desktop/01_別PC配布/ 内の Setup 0.1.0.exe は過去の配布物。
+  現在ソースの修正が入っている証拠にはしない。
+  0.1.1はoutput/desktop/02_別PC配布/のZIP。NSIS中間プログラムが
+  Windows署名ポリシーで拒否されたため、今回はZIPを用意した。別PC起動は未確認。
+
+メタデータ生成
+--------------
+Node標準APIだけで、ネットワーク取得やnpm installを行わず生成する。
+リポジトリルートをカレントディレクトリにして実行する例:
+
+node scripts/generate-desktop-manifest.mjs --out output/desktop/05_記録生成試験
+
+主担当の新版インストーラー生成完了後の例:
+
+node scripts/generate-desktop-manifest.mjs --out output/desktop/06_記録再生成 --artifact "apps/desktop/release/MEFX-S3 Desktop 0.1.1 Windows.zip"
+
+生成物:
+- 04_ビルド記録.json: アプリ/サーバーpackage version、UTC生成日時、Git HEADと
+  dirty真偽、OS/arch/Node、対象コード・設定・lock・スクリプトのSHA256、
+  指定installerのSHA256/size、本番npm依存、Python一覧、未確定項目。
+  Git情報は参照専用。変更ファイルの全リストは保存しない。
+- 05_同梱ライセンス.txt: 日本語索引、実本文の保存先、ffmpeg/ffprobeの
+  -version/-L出力、ローカルREADME記載URL、配布前の未確認事項。
+- licenses/: 検出したLICENSE/LICENCE/COPYING/NOTICEと、METADATAの
+  License-Fileが指す実本文を元バイトのまま保存。元パスとSHA256はJSONに収録。
+  識別子の羅列やダウンロード先の案内だけで実本文の代用をしない。
+
+--outは新しいフォルダを推奨する。04/05が既存なら上書きせず失敗する。
+配布スクリプトも既存フォルダには書き込まない。再生成時は -OutputFolder 03_別PC配布
+のように次の数字を指定する。本文例のフォルダが既にある場合も次の数字を使う。
+既存の01/02/03やinstallerは削除・上書きしない。途中失敗した出力は完成品とせず、
+原因確認後に別の--outで再実行する。installer省略時はJSONのinstallerがnull。
+入力はプロジェクト内のローカルファイルに限定し、外部リンク・.env・認証情報らしい
+ファイルは拒否する。インストール済みパッケージのコードをimport/requireしない。
+実行するのは参照用Git、Python --version、ffmpeg/ffprobe -version/-Lのみ。
+
+集計範囲と限界
+--------------
+- npmはserver/package.jsonとapps/desktop/package.jsonを起点として、
+  dependencies/optionalDependencies/配置済みpeerDependenciesを実際に解決する。
+  pnpmのjunction/symlinkはrealpathで解決する。devDependenciesを起点にしない。
+  インストールされていない任意依存と、見つからない必須依存を区別する。
+  本番欄に置かれたVite/TypeScript等も依存どおり記録し、勝手に除外しない。
+- Electronは開発依存欄にあっても配布ランタイムなので、Chromium通知と別途記録。
+  必要時はrelease/win-unpackedの実通知を補足に使うが、新版との一致は未証明。
+- Pythonはtools/python-packagesの*.dist-info/METADATAからName/Version/
+  License/License-Expressionを取得。継続行とヘッダー終端を扱う。
+  setuptools等のvendored dist-infoも区別し、補足の実ライセンスを収集する。
+  License未記載は本文があっても「識別子未記載」として残し、推測で補完しない。
+- Python本体はtools/pythonの実LICENSEを収集する。
+- ソースハッシュはDesktop/Server/Web/共有のコード・設定・テストと配布スクリプト。
+  node_modules全体、Pythonパッケージ本体、モデル、build/release複製、巨大な資料を
+  プロジェクト全体の再帰ハッシュに含めない。正確な対象はJSONのhashes.files参照。
+- 記録は検査時点のローカル入力のスナップショットであり、ビルドの実行証明ではない。
+  --installerを指定しても、そのexeと現在ソースの対応・署名・動作を保証しない。
+  新版のビルド終了後に生成し、主担当のビルド/署名/別PC検証記録と組み合わせる。
+
+ffmpeg / ffprobeの要確認点
+--------------------------
+初回ローカル調査ではffmpeg-static 5.3.0の表示はGPL-3.0-or-later、
+ffprobe-static 3.1.0のnpm表示はMIT。
+一方、Windows実バイナリはffmpeg 6.1.1-essentials_build-www.gyan.devと
+ffprobe 4.0.2で、ともに--enable-gpl --enable-version3を含んでいた。
+ラッパーのMIT表示をffprobe実体へ適用して、GPL事項を無視してはならない。
+
+ローカルREADMEにはffmpeg.org、eugeneware/ffmpeg-static、gyan.dev、
+ffprobe側にはjoshwnj/ffprobe-staticとffmpeg.zeranoe.com等のURLがある。
+この作業では外部サイトの到達性や、配布バイナリに正確に対応するソース、
+ビルド手順、静的リンク依存、ソースの提供方法は確認していない。
+実本文を保存できても、対応ソースや再配布条件を満たしたとの判定はしない。
+Demucsモデル重み、Python/Electronに含まれる第三者DLL等の個別条件も別途確認する。
+未確定事項はJSONのlicenseUnknownと05末尾に残す。生成成功は配布承認ではない。
+
+ローカル生成・検証の実測記録
+--------------------------
+検証記録のUTC日時: 2026-10-21T06:45:13.225Z
+主担当による変更と並行して検査したため、この日時の入力に対する記録とする。
+出力先（リポジトリルートからの相対パス）:
+output/desktop/04_ライセンス検証/02/
+
+- 記録したDesktop package version: 0.1.1。Node v24.19.0 / win32 / x64。
+- Git HEAD: 3e449f930900150b21ab4484f04f35e89c462e1f、dirty: true。
+- 本番npm依存: server 21件、apps/desktop 22件。必須依存の解決失敗は0件。
+  desktopの未配置任意依存は38件（他OS/arch等を含む）。dev専用起点は除外。
+- Python dist-info: 40件（通常28件、setuptools内vendored 12件）。
+  Python 3.12.13、torch/torchaudio 2.11.0+cpu、Demucs 4.0.1、
+  yt-dlp 2026.6.9。Electronランタイム33.4.11の通知も別途保存。
+- 実ライセンス本文: 114件。全件でコピー元と保存先のバイト列・SHA256が一致。
+- コード・設定・lock・配布スクリプト: 79ファイル。
+  生成直後に各SHA256と集約SHA256を再照合して一致。
+- 未確定: 14件。本文未検出はagent-base 6.0.2、https-proxy-agent 5.0.1、
+  @rolldown/binding-win32-x64-msvc 1.1.4、antlr4-python3-runtime 4.9.3。
+  識別子未記載はcolorama、Jinja2、omegaconf、backports.tarfile、
+  jaraco.text、submitit、torchaudio。これらは本文保存の有無とは区別して記録。
+  残りはffmpeg/ffprobeの対応ソース2件、モデル重み等の追加確認1件。
+- 検証用installerには既存の過去版0.1.0を明示指定した。
+  output/desktop/01_別PC配布/MEFX-S3 Desktop Setup 0.1.0.exe
+  size: 439900789 bytes
+  SHA256: 4965685b96af4e0aa9a64c78b9b7a33c41369a43af744cd40d4dccf8a3dcb0e8
+  これは現在ソース0.1.1の配布物ではなく、ハッシュ処理の実データ検証用。
+- 構文確認に加え、依存/本文/ハッシュ、CLI引数拒否、既存04/05上書き拒否、
+  .env/プロジェクト外installer拒否、installer省略の計9項目が成功。
+  初回の後追いソース照合では主担当更新後のelectron/main.tsが不一致となった。
+  新規出力先へ再生成し、その直後の9項目再検証で成功を確認した。
+- 試行時のmanifest-verification-20261021、同-final、同-without-installerも
+  削除せず残した検証用出力。正式配布用ではない。checkedが上記検証対象。
+
+主担当が新版installerの生成を終え、ソースの更新が止まった時点で、必ず新版exeを
+指定して配布用メタデータを別途生成する。この検証用04/05をそのまま転用しない。
+
+保存するもの
+------------
+- 現行ソース、設定、lock、tests、sharedの仕様。
+- docs/kicadの設計元、MEFX.pretty、ライブラリー設定。
+- 現行製造データ07と旧04/05/06の比較・監査・注文履歴。
+- docs/hardwareの部品/配線/現物合わせ資料、発注根拠、到着品の確認記録。
+- docs/firmwareの書込み・実機確認記録と対応するファームウェア成果物。
+- 旧01_別PC配布の0.1.0と、現行02_別PC配布の0.1.1は版別に保存。
+  build_artifacts/02_NSIS生成失敗/は中間プログラムで、配布やインストールに使わない。
+  メタデータ生成だけを目的に旧配布物を再パッケージ・置換しない。
+- tools/python、tools/python-packages、tools/torch-homeは配布の入力。
+  キャッシュに見えてもDemucsモデルを消すと初回動作や再現性に影響するため保持。
+
+整理候補A: 再生成可能だが検証・保存先の確認後
+-------------------------------------------
+- apps/desktop/release/portable-copy-test/ と同接頭辞の試験コピー:
+  別パス/日本語パスでの展開起動試験用。正式配布物ではない。
+  対象版・試験記録・アプリ終了を確認してから、将来の削除可否を判断する。
+- apps/desktop/release/win-unpacked/、dist/、dist-electron/、web/dist/:
+  生成物。installer検証・ライセンス参照・比較が終わるまで保持する。
+- firmware/build/、build_06/、build_07/、build_artifacts/01/:
+  ビルド複製候補。単なる版番号だけで旧版不要と判断しない。
+  scripts/.latest-firmware-build-pathの参照先と、flash用bin/elf/map、
+  sdkconfig、書込み済み版・ログの対応を先に確認する。
+  ソースから再生成可能な中間物と、唯一の実機確認成果物を区別する。
+- node_modules、.pnpm-store、apps/desktop/node_modules/.vite/.vite-temp:
+  依存/開発キャッシュ候補。現在のローカルビルド入力でもあるため今は保持。
+  lockと再取得手順、オフラインで再現できなくなる影響を確認してから判断する。
+
+整理候補B: 一時作業・履歴・ダウンロード複製
+-----------------------------------------
+- tmp/lo-profile*、tmp/presentation_render、tmp/pdfs、firmware/.tmp/:
+  文書レンダリング・LibreOffice・ESP-IDFの一時領域候補。
+  中身にユーザーデータがあり得るため、今回は内容を読まず分類だけ行う。
+  使用中プロセスを止める作業や削除は行っていない。
+- docs/kicad/.history/、mefx_s3.kicad_prl、各種バックアップ:
+  個人設定/復旧履歴候補。唯一の復旧点でないことを確認してから判断する。
+- tools/node-v24.16.0-win-x64.zipと展開済み同版:
+  ダウンロード複製候補。将来のオフライン再構築用保存との区別が必要。
+- tools/python-local/、資料用の一時ツール、生成PDF/画像の中間物:
+  使用箇所と再生成手順の確認が必要。tools/python等の配布入力と一括扱いしない。
+
+今は実施しないこと
+------------------
+上記候補の削除・移動・圧縮、旧データの書換え、未追跡ファイルの掃除、
+Git操作による変更の取り消しは行わない。
+将来の整理時は対象の絶対パス・容量・用途・再生成手順・保存先を一覧化し、
+現物/配布の証跡を残してから、別途許可された範囲で作業する。

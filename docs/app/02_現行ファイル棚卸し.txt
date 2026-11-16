@@ -1,0 +1,136 @@
+MEFX-S3 現行ファイル棚卸し 02
+============================
+
+プロジェクト全体
+----------------
+- README.md
+  - プロジェクト全体の説明。
+- shared/
+  - Web、サーバー、ファームウェアで共有する仕様。
+- web/
+  - 現在のReact/PWAアプリ。
+- server/
+  - YouTube解析用のPCローカルサーバー。
+- firmware/
+  - ESP32-S3用ファームウェア。
+- docs/
+  - 手順書、ハード設計、JLCPCB発注、ケース、確認資料。
+- scripts/
+  - ビルド、検証、JLCPCBデータ生成などの補助スクリプト。
+- sim/
+  - 回路シミュレーション用ファイル。
+
+アプリ化で重要な既存ファイル
+----------------------------
+
+web/package.json
+- 現在のWebアプリの依存関係。
+- React + TypeScript + Vite。
+- アプリ化する場合、最初はこのUI資産を流用する。
+
+web/src/App.tsx
+- 現在のメイン画面。
+- Manual Editor、YouTube Tone Match、Bluetooth接続、ローカル解析状態、プリセット一覧が入っている。
+- いまは1ファイルに機能が集まりすぎているので、アプリ化時に画面単位へ分割する。
+
+web/src/components/PresetPanel.tsx
+- プリセット編集UI。
+- アプリ版でも流用候補。
+
+web/src/components/EffectSlider.tsx
+- 0から100のエフェクト操作UI。
+- アプリ版でも流用候補。
+
+web/src/lib/ble.ts
+- ESP32とのBLE通信。
+- UUID、プリセット送信、本体プリセット一覧/読込/削除、状態通知、テレメトリ受信を持つ。
+- Web Bluetooth前提なので、Electron化では調整が必要。
+
+web/src/lib/localAnalyzer.ts
+- ローカル解析サーバーとのHTTP通信。
+- health、analyze、heartbeat、client-closeを持つ。
+- デスクトップアプリでは、このサーバーをアプリから起動/終了できるようにしたい。
+
+web/src/lib/presets.ts
+- プリセット作成、保存、検証。
+- アプリ版の中核ロジックとして流用候補。
+
+web/src/types.ts
+- Preset、Effects、DeviceStatus、AudioTelemetryなどの型。
+- 将来的にはshared側へ移動したい。
+
+web/src/i18n.ts
+- 日本語/英語などの表示文言。
+- アプリ版でも流用候補。
+
+shared/preset.schema.json
+- プリセットJSONの正式仕様。
+- これがWeb、アプリ、ESP32、解析サーバーの共通ルール。
+
+shared/ble-contract.md
+- BLE通信仕様。
+- ESP32とアプリの約束。
+- アプリ開発時の基準資料。
+
+server/src/server.js
+- 解析サーバー本体。
+- health、heartbeat、client-close、analyze APIを持つ。
+
+server/src/analyzer.js
+- YouTube/音色解析ロジック。
+- 今後、仮解析から本物の抽出/解析へ育てる場所。
+
+server/src/demucs_runner.py
+- Demucsなどの音源分離処理に関係するPython側。
+
+firmware/components/ble_control/
+- ESP32側BLE GATT。
+- アプリと通信する相手。
+
+firmware/components/preset_store/
+- ESP32側プリセット保存。
+
+firmware/components/dsp/
+- 0から100の効果値を音声処理へ反映する部分。
+
+アプリ化では直接触らないが重要なもの
+------------------------------------
+docs/pcb-assembly/07_order_package/
+- JLCPCBに送った最新の基板/PCBAデータ。
+- アプリ開発では基本触らない。
+
+docs/hardware/
+- 組立、部品、配線、仕様確認資料。
+- アプリ画面で表示するヘルプの元資料として使える。
+
+docs/case-jlc3dp/
+- ケース3Dデータ。
+- アプリ開発では基本触らない。
+
+今の課題
+--------
+1. web/src/App.tsxに機能が集まりすぎている。
+2. Web Bluetooth前提なので、普通のアプリ化ではBluetooth層を分ける必要がある。
+3. 解析サーバーが別プロセスなので、アプリから起動/終了できる仕組みが必要。
+4. UIが試作寄りなので、楽器用アプリとして画面整理が必要。
+5. データ保存がlocalStorage中心なので、アプリ用の保存方式へ置き換えたい。
+
+まず整理する構成案
+------------------
+apps/desktop/
+- Windowsアプリ本体。
+
+packages/core/
+- Preset型、検証、BLE UUID、共通ユーティリティ。
+
+packages/ui/
+- EffectSlider、PresetPanelなど共通UI。
+
+server/
+- 解析サーバー。
+- 最初は既存のまま使い、あとでアプリ同梱へ進める。
+
+firmware/
+- ESP32ファームウェア。
+- アプリとは別で保守する。
+

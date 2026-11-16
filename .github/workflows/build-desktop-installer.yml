@@ -1,0 +1,149 @@
+name: Build Desktop Installer
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_demucs_warmup:
+        description: "Skip Demucs model warmup to make a faster test build"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      signing_mode:
+        description: "Windows code signing mode"
+        required: false
+        default: "unsigned"
+        type: choice
+        options:
+          - "unsigned"
+          - "pfx"
+permissions:
+  contents: read
+
+jobs:
+  windows-installer:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.13"
+          cache: pip
+
+      - name: Cache analysis bundle
+        uses: actions/cache@v4
+        with:
+          path: |
+            tools/python-packages
+            tools/torch-home
+            server/node_modules
+            apps/desktop/.pnpm-store
+          key: desktop-analysis-${{ runner.os }}-${{ hashFiles('server/pnpm-lock.yaml', 'server/package.json', 'scripts/*lock*', 'scripts/prepare-desktop-bundle-tools.ps1') }}
+          restore-keys: |
+            desktop-analysis-${{ runner.os }}-
+
+      - name: Prepare bundled analysis tools
+        shell: pwsh
+        run: |
+          $skipWarmup = "${{ github.event.inputs.skip_demucs_warmup }}" -eq "true"
+          if ($skipWarmup) {
+            ./scripts/prepare-desktop-bundle-tools.ps1 -SkipDemucsWarmup
+          } else {
+            ./scripts/prepare-desktop-bundle-tools.ps1
+          }
+
+      - name: Install desktop dependencies
+        working-directory: apps/desktop
+        shell: pwsh
+        run: pnpm install --frozen-lockfile --store-dir .pnpm-store
+
+      - name: Test BLE protocol and storage recovery
+        working-directory: apps/desktop
+        shell: pwsh
+        run: pnpm test
+
+      - name: Test analysis progress and cancellation
+        working-directory: server
+        shell: pwsh
+        run: pnpm test
+
+      - name: Verify desktop app and audio file tools
+        working-directory: apps/desktop
+        shell: pwsh
+        run: pnpm run verify
+
+      - name: Verify backup and analysis UI
+        working-directory: apps/desktop
+        shell: pwsh
+        run: pnpm run test:ui
+
+      - name: Verify unpacked app without development PATH
+        working-directory: apps/desktop
+        shell: pwsh
+        env:
+          CI: "true"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: pnpm run verify:phase10.5
+
+      - name: Verify analyzer port fallback
+        working-directory: apps/desktop
+        shell: pwsh
+        run: pnpm run test:analyzer-port
+
+      - name: Build unsigned installer
+        if: ${{ github.event.inputs.signing_mode == 'unsigned' }}
+        working-directory: apps/desktop
+        shell: pwsh
+        env:
+          CI: "true"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: pnpm run package:installer:unsigned
+
+      - name: Build signed installer with PFX
+        if: ${{ github.event.inputs.signing_mode == 'pfx' }}
+        working-directory: apps/desktop
+        shell: pwsh
+        env:
+          CI: "true"
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+        run: pnpm run package:installer
+
+      - name: Check Authenticode signature
+        working-directory: apps/desktop
+        shell: pwsh
+        run: |
+          $expected = if ("${{ github.event.inputs.signing_mode }}" -eq "pfx") { "Valid" } else { "Unsigned" }
+          powershell -ExecutionPolicy Bypass -File scripts/check-signature.ps1 -Expected $expected
+
+      - name: Build distribution folder and SHA-256
+        shell: pwsh
+        run: |
+          $expected = if ("${{ github.event.inputs.signing_mode }}" -eq "pfx") { "Valid" } else { "Unsigned" }
+          ./scripts/build-desktop-distribution.ps1 -SkipBuild -SkipDefenderScan -ExpectedSignature $expected -PackageFormat Installer
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mefx-s3-desktop-windows-installer
+          path: output/desktop/02_別PC配布/**
+          if-no-files-found: error
+          retention-days: 14

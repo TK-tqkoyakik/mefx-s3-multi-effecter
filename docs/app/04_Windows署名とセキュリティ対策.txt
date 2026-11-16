@@ -1,0 +1,78 @@
+MEFX-S3 Windowsアプリの署名とセキュリティ対策
+
+目的
+----
+Windowsのスマート アプリ コントロールで止められない配布物にする。
+結論として、配布用のexe/installerには信頼された発行元のコード署名が必要。
+
+今起きていること
+----------------
+- アプリ本体は未署名。
+- Windowsは発行元を確認できないexeを危険な可能性があるアプリとして止めることがある。
+- これはアプリ内部のバグではなく、配布物の信頼情報が足りない状態。
+
+正しい解決策
+------------
+1. 開発中
+   - MEFX-S3 Desktop 開発版ショートカットで起動する。
+   - これは開発確認用。最終配布用ではない。
+
+2. 配布前
+   - 信頼されたコード署名を導入する。
+   - 候補は次のどちらか。
+
+   A. Azure Artifact Signing / Trusted Signing
+      - Microsoftのクラウド署名サービス。
+      - GitHub Actionsと相性がよい。
+      - 証明書や秘密鍵を手元PCに置かずに済む。
+      - Windows向け外部配布では第一候補。
+
+   B. 認証局のコード署名証明書
+      - DigiCert、GlobalSign、Sectigoなどから購入する。
+      - PFX証明書またはハードウェアトークンを使って署名する。
+      - electron-builderでは CSC_LINK と CSC_KEY_PASSWORD を使う。
+
+やってはいけないこと
+--------------------
+- Smart App Controlを切る前提で配布しない。
+- 自己署名証明書だけで一般ユーザー向け配布を完了扱いにしない。
+- 未署名exeをzipで配って「警告が出たら許可して」と案内しない。
+
+PFX証明書を使う場合のGitHub Secrets
+-----------------------------------
+GitHub Actionsで署名する場合は、配布用リポジトリに以下を登録する。
+
+- CSC_LINK
+  - PFXファイルをbase64化した文字列、または安全に取得できるURL。
+- CSC_KEY_PASSWORD
+  - PFXのパスワード。
+
+ローカルPowerShellでPFXをbase64化する例:
+
+certutil -encode certificate.pfx certificate.pfx.base64
+
+作成されたbase64ファイルの中身をCSC_LINKに入れる。
+ただしGitHub Secretsに入れる前に、配布用リポジトリの権限を絞る。
+
+署名確認
+--------
+ビルド後に以下を実行する。
+
+cd apps/desktop
+powershell -ExecutionPolicy Bypass -File scripts/check-signature.ps1
+
+StatusがValidなら署名済み。
+NotSignedなら未署名。
+
+現在のプロジェクト側対応
+------------------------
+- electron-builderの署名無効化設定を外した。
+- 証明書情報がある環境では署名できる状態にした。
+- 署名確認用スクリプトを追加した。
+
+残っている外部作業
+------------------
+- Azure Artifact Signingを契約/設定する、またはコード署名証明書を購入する。
+- GitHub Secretsへ署名情報を登録する。
+- GitHub Actionsで署名済みインストーラーを作る。
+- 別PCでSmart App Controlに止められないか確認する。

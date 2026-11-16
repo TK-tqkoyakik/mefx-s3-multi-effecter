@@ -1,0 +1,89 @@
+MEFX-S3 接続・処理・配布の安定化
+確認日: 2026-10-22
+
+1. 今回の変更
+・本体のstrstr/atoiによるJSON解析を廃止し、espressif/cjson 1.7.19~2を固定して使用。
+  名前・楽器・出所・6エフェクト・bypass・日時の型と上限、命令の整数スロットを検証。
+  重複キー、余計なキー、末尾データ、NUL、過剰な入れ子は拒否。失敗時は保存・削除しない。
+  JSON出力をエスケープし、NVS読込時もサイズ・文字列終端・値を検査する。
+  一覧は最大4件。古い名前のエスケープで長くなる場合は応答バッファに合わせて少なく返す。
+
+・BLEは最初の機器への自動接続をやめ、MEFX-S3候補の明示選択を必須に変更。
+  キャンセル、画面遷移、30秒の選択待ち終了では許可しない。
+  ローカル画面のWeb Bluetooth APIが利用できることをElectron内で検査済み。
+  これはPC側の許可。本体の暗号化・ボンディング・接続元認証を実装した意味ではない。
+
+・音声ファイルの変換・エフェクト書き出しに中止を追加。
+  処理終了まで中止完了と扱わず、タイムアウト30分、同時処理の拒否、終了時の停止を実装。
+  一時WAVへ書き、完成してから公開。過去の出力は上書きせず、元の録音も変更しない。
+  音声ファイル画面を離れた場合もその処理を中止する。
+
+・Windows x64 CPython 3.12.13、解析28パッケージ、ビルド用4パッケージを固定。
+  重複するsetuptoolsを除くと31種類の配布アーカイブをSHA-256で固定している。
+  torch/torchaudioは両方2.11.0+cpu。htdemucsの実モデルもSHA-256で検査。
+  pip/wheel/packagingはビルド環境用で、アプリの解析パッケージには入れない。
+  新規環境で検査後に入れ替え、元の環境はtools/03_python_previous_*へ残す。
+  配布時はPythonパッケージのbin/Scripts実行ファイルを除外する。
+  解析時は外部PYTHONHOME/PYTHONPATHなどを引き継がず、ユーザーサイトと作業フォルダーの
+  暗黙的importも無効化し、同梱の解析パッケージだけを明示的に参照する。
+
+・署名監査に.pydを追加。一般配布監査用audit-desktop-public-release.ps1を用意。
+  署名、ライセンス、対応ソース、別PC試験を別の条件として扱い、一般配布を自動承認しない。
+  証明書・秘密鍵の探索/作成、署名費用の支払い、Windows保護の無効化は行っていない。
+
+2. 自動確認
+・デスクトップ単体テスト86件、サーバーテスト37件が成功。
+・本体の実Cコード＋同じcJSONによるホストテスト42項目が成功。
+  不正JSON、重複、範囲外、名前、NUL、読込/削除命令、出力の再解析を検査。
+・Electron画面試験が成功。バックアップ/復元、解析中止、BLE選択の許可、中止表示、
+  日本語パス、英語復元、破損ライブラリを検査。機器と一部ジョブは試験用の代替処理。
+・実ffmpegによる日本語パスでのWAV作成、中止時のプロセス停止と一時ファイル除去が成功。
+・完全ハッシュ固定のオフライン再構築、pip check、全解析import、実Demucs処理、
+  配布パッケージ集合とモデルのハッシュ確認が成功。
+・ESP-IDF 6.0.1でESP32-S3向けビルドが成功。基板・ピン配置は変更していない。
+  ビルド場所: C:\Espressif\08_mefx_firmware
+  ホスト試験: build_artifacts/04_firmware_json_test
+  書込前確認付きバイナリ: output/firmware/08_JSON検証版（未実機試験）
+
+3. 未確認・一般配布前の条件
+・今回COMポートは見つからず、本体への書込・BLE実通信・実際の音出しは未試験。
+・別PCの新規ユーザー、実ESP32、マイク入出力、全機能のSmart App Control試験は未完了。
+・有効な署名証明書を用意し、全ての読み込むバイナリを監査する必要がある。
+・現在のElectron 33.4.11は一般配布前にサポート対象版へ更新し、APIとセキュリティを再検証する。
+・GPLのffmpeg/ffprobeは正確なビルドに対応したソース・静的リンク依存と配布方法の確認が必要。
+  npmラッパーのライセンスだけで同梱EXEの再配布を判断しない。
+・モデル、Python DLL/PYDの第三者条件と、未確定ライセンステキストを解決する。
+・今回のZIPも個人試験版。一般公開や外部へのアップロードは行っていない。
+
+4. 主要ファイル
+本体: firmware/components/preset_store/preset_json.c、firmware/dependencies.lock
+音声ジョブ: apps/desktop/electron/audioFileJob.ts
+BLE選択: apps/desktop/electron/bluetoothChooser.ts
+Python固定: scripts/desktop-analysis-requirements.lock.txt、desktop-python-build.lock.txt
+再構築: scripts/prepare-desktop-bundle-tools.ps1 -Offline -PythonRoot <CPython 3.12.13のフォルダー>
+モデル/集合検査: scripts/verify-desktop-python.py
+署名・一般配布監査: scripts/audit-desktop-public-release.ps1
+
+配布版の確認結果
+・最新版: output/desktop/03_別PC配布/MEFX-S3 Desktop 0.1.2 Windows.zip
+・ZIPサイズ: 517,298,299 bytes。破損検査成功。展開後の全サイズは約1.46GB。
+・SHA-256: 133589D354687F3C4144C9B7536433D37BE95AE796281ABD3AD896D840089253
+・ZIP内のアプリ13ファイルを現在のビルド結果と照合し、同梱サーバーも修正ソースと一致。
+・開発用PATHを外した別パスでffmpeg/ffprobe/Pythonと全解析import、モデル検査が成功。
+  ただし、展開したアプリEXEの起動はWindowsのアプリケーション制御ポリシーに拒否された。
+  展開版起動・内蔵サーバーのhealth確認は未成功。これを成功扱いせず、保護も変更していない。
+・105バイナリを署名監査し、99個は有効署名なし。再配布条件の未確定項目は14件。
+・この新版ZIPに対するWindows Defenderスキャンは未実行。旧版のスキャン結果を流用しない。
+・途中で作ったZIPは05_安定化検証/02_生成途中_使用しないに区別して保管した。
+・署名ポリシーで拒否された場合に検証スクリプトが正常終了する挙動も修正した。
+
+5. 公式資料
+Electron機器アクセス: https://www.electronjs.org/docs/latest/tutorial/devices
+ESP-IDF 6 JSON移行: https://github.com/espressif/esp-idf/blob/master/docs/en/migration-guides/release-6.x/6.0/protocols.rst
+cJSON固定版: https://components.espressif.com/components/espressif/cjson/versions/1.7.19~2/readme
+pipハッシュ固定: https://pip.pypa.io/en/stable/topics/secure-installs/
+Windows署名試験: https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/test-your-app-with-smart-app-control
+FFmpeg配布条件: https://www.ffmpeg.org/legal.html
+Demucs 4.0.1 LICENSE: https://github.com/facebookresearch/demucs/blob/v4.0.1/LICENSE
+Python環境変数: https://docs.python.org/3.12/using/cmdline.html
+Electronサポート方針: https://www.electronjs.org/docs/latest/tutorial/electron-timelines

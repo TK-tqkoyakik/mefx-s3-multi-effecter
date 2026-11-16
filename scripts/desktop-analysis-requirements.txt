@@ -1,0 +1,2 @@
+# Compatibility entry point. The complete transitive lock is authoritative.
+-r desktop-analysis-requirements.lock.txt

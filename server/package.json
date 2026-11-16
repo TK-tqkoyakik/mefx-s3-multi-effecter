@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
-    "test": "node --test"
+    "test": "node --test test/*.test.js",
+    "test:offline-audio": "node test/offline-audio-smoke.mjs"
   },
   "dependencies": {
     "ffmpeg-static": "^5.2.0",

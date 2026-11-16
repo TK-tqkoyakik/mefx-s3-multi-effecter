@@ -1,0 +1,109 @@
+{
+  "name": "mefx-s3-desktop",
+  "version": "0.1.2",
+  "private": true,
+  "description": "MEFX-S3 Windows desktop app for preset editing, Tone Match, IR convolution, audio file rendering, and device control.",
+  "author": "MEFX-S3 Project",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on tcp:5174 && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5174 electron .\"",
+    "build": "tsc && vite build && tsc -p tsconfig.electron.json",
+    "package": "pnpm run build && electron-builder --win portable",
+    "package:dir": "pnpm run build && electron-builder --win dir",
+    "package:dir:unsigned": "pnpm run build && electron-builder --win dir -c.win.signAndEditExecutable=false",
+    "package:installer": "pnpm run build && electron-builder --win nsis",
+    "package:installer:unsigned": "pnpm run build && electron-builder --win nsis -c.win.signAndEditExecutable=false",
+    "package:zip:unsigned": "pnpm run build && electron-builder --win zip -c.win.signAndEditExecutable=false -c.artifactName=\"${productName} ${version} Windows.${ext}\"",
+    "verify": "powershell -ExecutionPolicy Bypass -File scripts/verify-phase10.ps1",
+    "verify:phase10.5": "powershell -ExecutionPolicy Bypass -File scripts/verify-phase10-5.ps1",
+    "test:device-preset": "node --test --experimental-strip-types test/devicePreset.test.mjs",
+    "test": "tsc -p tsconfig.electron.json && node --test --experimental-strip-types test/*.test.mjs",
+    "test:ui": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-ui.ps1",
+    "test:analyzer-port": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-analyzer-port-fallback.ps1",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.5.0",
+    "vite": "^8.0.16"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "local.mefx-s3.desktop",
+    "productName": "MEFX-S3 Desktop",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "artifactName": "${productName} Setup ${version}.${ext}",
+    "files": [
+      "dist/**",
+      "dist-electron/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../../server",
+        "to": "server",
+        "filter": [
+          "src/**",
+          "package.json",
+          "package-lock.json",
+          "node_modules/**"
+        ]
+      },
+      {
+        "from": "../../tools/python",
+        "to": "tools/python",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "../../tools/python-packages",
+        "to": "tools/python-packages",
+        "filter": [
+          "**/*",
+          "!bin/**",
+          "!Scripts/**"
+        ]
+      },
+      {
+        "from": "../../tools/torch-home",
+        "to": "tools/torch-home",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
