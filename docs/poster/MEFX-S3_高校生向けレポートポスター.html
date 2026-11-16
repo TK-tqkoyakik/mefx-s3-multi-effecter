@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>MEFX-S3 高校生向けレポートポスター</title>
+  <style>
+    @page {
+      size: A3 landscape;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #eef3f8;
+      color: #172033;
+      font-family: "Yu Gothic", "Meiryo", "Noto Sans JP", Arial, sans-serif;
+      line-height: 1.48;
+    }
+
+    .sheet {
+      width: 400mm;
+      min-height: 277mm;
+      margin: 0 auto;
+      padding: 13mm;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(41, 121, 255, 0.14), transparent 25%),
+        radial-gradient(circle at 95% 12%, rgba(0, 178, 125, 0.12), transparent 24%),
+        #fbfdff;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 12mm;
+      align-items: end;
+      border-bottom: 1.5mm solid #173f70;
+      padding-bottom: 6mm;
+      margin-bottom: 6mm;
+    }
+
+    h1 {
+      margin: 0 0 2mm;
+      font-size: 26pt;
+      letter-spacing: 0.02em;
+      color: #102b4e;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 12.2pt;
+      font-weight: 700;
+      color: #35506b;
+    }
+
+    .tagline {
+      border: 0.4mm solid #9cc3e6;
+      border-radius: 3mm;
+      padding: 4mm;
+      background: #f1f8ff;
+      font-size: 10.2pt;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5mm;
+      align-items: stretch;
+    }
+
+    section {
+      background: rgba(255, 255, 255, 0.92);
+      border: 0.35mm solid #d6e1ec;
+      border-radius: 3mm;
+      padding: 4mm;
+      break-inside: avoid;
+      box-shadow: 0 1.5mm 5mm rgba(18, 35, 60, 0.08);
+    }
+
+    h2 {
+      margin: 0 0 2.2mm;
+      font-size: 13.5pt;
+      color: #0d4f8b;
+      border-left: 1.5mm solid #0d78d6;
+      padding-left: 2.5mm;
+    }
+
+    h3 {
+      margin: 3mm 0 1.5mm;
+      font-size: 10.5pt;
+      color: #102b4e;
+    }
+
+    p {
+      margin: 0 0 2.5mm;
+      font-size: 9.2pt;
+    }
+
+    ul, ol {
+      margin: 1.5mm 0 0;
+      padding-left: 5mm;
+      font-size: 8.9pt;
+    }
+
+    li {
+      margin: 0 0 1.2mm;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2mm;
+      font-size: 8.4pt;
+    }
+
+    th, td {
+      border: 0.25mm solid #d5e0eb;
+      padding: 1.6mm 1.8mm;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eaf4ff;
+      color: #123b66;
+      text-align: left;
+    }
+
+    .abstract {
+      grid-column: span 2;
+      background: #f6fbff;
+    }
+
+    .keyword-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5mm;
+      margin-top: 2.5mm;
+    }
+
+    .keyword {
+      border-radius: 999px;
+      background: #e8f1fb;
+      color: #143d66;
+      padding: 1mm 2.2mm;
+      font-size: 8.5pt;
+      font-weight: 700;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 2mm;
+      margin-top: 2mm;
+    }
+
+    .flow-step {
+      min-height: 19mm;
+      border-radius: 2.5mm;
+      padding: 2mm;
+      color: #0b2138;
+      background: #eaf6ff;
+      border: 0.3mm solid #b9d8f2;
+      font-size: 7.8pt;
+      text-align: center;
+    }
+
+    .flow-step strong {
+      display: block;
+      margin-bottom: 1mm;
+      font-size: 9.2pt;
+      color: #0c5596;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3mm;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+      margin-top: 2mm;
+    }
+
+    .status-card {
+      border-radius: 2.5mm;
+      padding: 2.5mm;
+      font-size: 8.3pt;
+      border: 0.3mm solid #d8e2ec;
+    }
+
+    .done {
+      background: #ecfff4;
+      border-color: #8ed9ad;
+    }
+
+    .todo {
+      background: #fff8eb;
+      border-color: #f0c071;
+    }
+
+    .note {
+      background: #fff5f4;
+      border-left: 1.2mm solid #ef5350;
+      padding: 2.5mm;
+      border-radius: 2mm;
+      font-size: 8.5pt;
+    }
+
+    .board {
+      width: 100%;
+      border-radius: 2.5mm;
+      border: 0.4mm solid #b8c9d8;
+      background: #102a1f;
+      margin-top: 2mm;
+    }
+
+    .mini {
+      font-size: 7.8pt;
+      color: #4b5d70;
+    }
+
+    .foot {
+      margin-top: 5mm;
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 5mm;
+      align-items: start;
+      color: #34495f;
+      font-size: 8.1pt;
+    }
+
+    .ref-list {
+      margin: 0;
+      padding-left: 4.5mm;
+      font-size: 7.8pt;
+    }
+
+    .code {
+      font-family: Consolas, "Courier New", monospace;
+      background: #eef3f8;
+      border-radius: 1mm;
+      padding: 0.2mm 1mm;
+    }
+
+    @media screen {
+      .sheet {
+        margin: 8mm auto;
+        box-shadow: 0 4mm 20mm rgba(11, 32, 54, 0.16);
+      }
+    }
+
+    @media print {
+      .sheet {
+        width: 400mm;
+        min-height: 0;
+        padding: 8mm;
+      }
+
+      header {
+        gap: 7mm;
+        padding-bottom: 3.5mm;
+        margin-bottom: 3.5mm;
+      }
+
+      h1 {
+        font-size: 20.5pt;
+        margin-bottom: 1mm;
+      }
+
+      .subtitle {
+        font-size: 9.5pt;
+      }
+
+      .tagline {
+        padding: 2.5mm;
+        font-size: 8pt;
+      }
+
+      .grid {
+        gap: 3mm;
+      }
+
+      section {
+        padding: 2.6mm;
+        border-radius: 2mm;
+        box-shadow: none;
+      }
+
+      h2 {
+        font-size: 10.2pt;
+        margin-bottom: 1.4mm;
+        padding-left: 1.8mm;
+      }
+
+      h3 {
+        font-size: 8pt;
+        margin: 1.8mm 0 0.8mm;
+      }
+
+      p {
+        font-size: 7.1pt;
+        margin-bottom: 1.4mm;
+      }
+
+      ul, ol {
+        font-size: 7pt;
+        margin-top: 0.8mm;
+        padding-left: 4mm;
+      }
+
+      li {
+        margin-bottom: 0.5mm;
+      }
+
+      table {
+        font-size: 6.7pt;
+        margin-top: 1mm;
+      }
+
+      th, td {
+        padding: 0.9mm 1.1mm;
+      }
+
+      .keyword-row {
+        gap: 1mm;
+        margin-top: 1.2mm;
+      }
+
+      .keyword {
+        font-size: 6.6pt;
+        padding: 0.5mm 1.4mm;
+      }
+
+      .flow {
+        gap: 1mm;
+        margin-top: 1mm;
+      }
+
+      .flow-step {
+        min-height: 12mm;
+        padding: 1.2mm;
+        font-size: 5.9pt;
+      }
+
+      .flow-step strong {
+        font-size: 7.4pt;
+        margin-bottom: 0.4mm;
+      }
+
+      .two-col {
+        gap: 2mm;
+      }
+
+      .status {
+        gap: 1.5mm;
+        margin-top: 1mm;
+      }
+
+      .status-card {
+        padding: 1.5mm;
+        font-size: 6.6pt;
+      }
+
+      .note {
+        padding: 1.4mm;
+        font-size: 6.6pt;
+      }
+
+      .board {
+        max-height: 50mm;
+        object-fit: contain;
+        margin-top: 1mm;
+      }
+
+      .mini {
+        font-size: 6.2pt;
+      }
+
+      .foot {
+        margin-top: 3mm;
+        gap: 3mm;
+        font-size: 6.4pt;
+      }
+
+      .ref-list {
+        font-size: 6.2pt;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <header>
+      <div>
+        <h1>MEFX-S3: ESP32-S3を使ったギター・ベース用マルチエフェクター試作</h1>
+        <p class="subtitle">回路基板、ESP32ファームウェア、Windowsアプリ、音色プリセット管理を一体で作る製作研究</p>
+      </div>
+      <div class="tagline">
+        <strong>一言でいうと:</strong><br>
+        楽器の音をESP32でリアルタイムに変化させ、PCアプリから音色を作って本体へ送る小型エフェクターを作るプロジェクト。
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="abstract">
+        <h2>要旨</h2>
+        <p>
+          本研究では、ESP32-S3を中心に、ギターとベースの両方で使えるマルチエフェクター試作機を製作した。
+          本体は9V電源、音声入出力回路、フットスイッチ、マイク監視、Bluetooth通信を持つ。
+          アプリ側では、音色を0から100の値で編集し、プリセットとして保存し、Bluetooth Low EnergyでESP32へ送る。
+          PC上ではIR畳み込みを使った試聴やTone Matchの入口も用意した。
+        </p>
+        <p>
+          現時点では、アプリ、基板データ、ESP32ファームウェア、組み立て資料がそろい、実機の電源・音声確認へ進む段階である。
+          YouTube音色コピーは、現在は画面とデータの流れを確認できる段階であり、本格的な音源分離と推定精度の評価は今後の課題である。
+        </p>
+        <div class="keyword-row">
+          <span class="keyword">ESP32-S3</span>
+          <span class="keyword">ギター・ベース</span>
+          <span class="keyword">Bluetooth LE</span>
+          <span class="keyword">DSP</span>
+          <span class="keyword">IR畳み込み</span>
+          <span class="keyword">KiCad基板設計</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>研究の目的</h2>
+        <ul>
+          <li>楽器の音をデジタル処理で変化させる仕組みを作る。</li>
+          <li>PCアプリから音色を作り、ESP32本体へ送れるようにする。</li>
+          <li>スマホやPCが外れても、本体だけで保存済み音色を使えるようにする。</li>
+          <li>高価なクラウド処理に頼らず、できるだけローカルで解析する。</li>
+        </ul>
+        <p class="note">
+          目標は市販品レベルの完成品ではなく、「実際に作って検証できる製品試作 v1」である。
+        </p>
+      </section>
+
+      <section>
+        <h2>全体の仕組み</h2>
+        <div class="flow">
+          <div class="flow-step"><strong>1</strong>ギター/ベース入力</div>
+          <div class="flow-step"><strong>2</strong>TL072で音声を整える</div>
+          <div class="flow-step"><strong>3</strong>CS4270でデジタル化</div>
+          <div class="flow-step"><strong>4</strong>ESP32でDSP処理</div>
+          <div class="flow-step"><strong>5</strong>CS4270でアナログへ戻す</div>
+          <div class="flow-step"><strong>6</strong>アンプへ出力</div>
+        </div>
+        <p>
+          アプリはBluetoothで「音声そのもの」ではなく「音色の設定値」を送る。
+          そのため演奏中に毎回PCへ通信する必要がなく、本体だけで音を変えられる。
+        </p>
+      </section>
+
+      <section>
+        <h2>本体ハードウェア</h2>
+        <table>
+          <tr><th>部品</th><th>役割</th></tr>
+          <tr><td>ESP32-S3</td><td>音声処理、Bluetooth、プリセット管理を行う中心部。</td></tr>
+          <tr><td>CS4270</td><td>アナログ音声とデジタル音声を変換するオーディオCODEC。</td></tr>
+          <tr><td>TL072</td><td>楽器入力を扱いやすい信号に整えるオペアンプ。</td></tr>
+          <tr><td>R-78E5.0</td><td>9Vから5Vを作るDC/DC電源。</td></tr>
+          <tr><td>AP2112K-3.3</td><td>5Vから3.3Vを作るLDO電源。</td></tr>
+          <tr><td>フットスイッチ</td><td>短押しでプリセット切替、長押しでバイパス切替。</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>基板と組み立て</h2>
+        <img class="board" src="../hardware/generated/MEFX-S3_直配線_書き込み図_full.png" alt="MEFX-S3基板の直配線図">
+        <p class="mini">
+          基板はJLCPCB向けGerber/BOM/CPLを作成済み。SMT部品は工場実装、ESP32ソケット、R-78、ジャック、スイッチ、マイクは手はんだで取り付ける。
+        </p>
+      </section>
+
+      <section>
+        <h2>Windowsアプリ</h2>
+        <div class="two-col">
+          <div>
+            <h3>Manual Editor</h3>
+            <p>Gain、EQ、Compressor、Drive、Modulation、Delay/Reverbを0から100で調整する。</p>
+            <h3>Library</h3>
+            <p>作った音色を保存、読込、削除、名前変更できる。</p>
+          </div>
+          <div>
+            <h3>Tone Match</h3>
+            <p>YouTube URLや解析結果から音色候補を作る入口。現段階では仮解析とサーバー解析の流れを確認する。</p>
+            <h3>Audio FX</h3>
+            <p>PC入力音にIR畳み込みをかけ、音の変化をA/B比較できる。</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>ESP32内部の処理</h2>
+        <ol>
+          <li>48 kHzのI2S音声を64サンプルずつ読む。</li>
+          <li>保存済みプリセットをNVSから読み込む。</li>
+          <li>ゲイン、コンプレッサー、歪み、FIRフィルタ、揺れ、ディレイを軽く計算する。</li>
+          <li>処理後の音声をI2SでCODECへ戻す。</li>
+          <li>BLEで接続状態や音量メーターを低い頻度でアプリへ通知する。</li>
+        </ol>
+        <p class="mini">
+          重要な工夫: PC用の長いWAV IRはそのままESP32へ送らず、<span class="code">deviceTone</span>という軽い値に変換する。
+        </p>
+      </section>
+
+      <section>
+        <h2>通信データ</h2>
+        <p>
+          Bluetoothでは、音声ファイルではなくJSON形式のプリセットを送る。
+          例として、楽器種別、音色名、6種類のエフェクト値、バイパス状態、作成元を持つ。
+        </p>
+        <table>
+          <tr><th>データ</th><th>方向</th><th>内容</th></tr>
+          <tr><td>PresetWrite</td><td>アプリ -> 本体</td><td>プリセット送信</td></tr>
+          <tr><td>PresetList</td><td>本体 -> アプリ</td><td>保存済み一覧</td></tr>
+          <tr><td>DeviceStatus</td><td>本体 -> アプリ</td><td>接続、モード、電源状態</td></tr>
+          <tr><td>AudioTelemetry</td><td>本体 -> アプリ</td><td>入力、出力前、マイクの音量</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>できたもの</h2>
+        <div class="status">
+          <div class="status-card done">
+            <strong>完成に近いもの</strong>
+            <ul>
+              <li>Windowsアプリの画面</li>
+              <li>プリセット保存と編集</li>
+              <li>シミュレーター</li>
+              <li>BLE通信仕様</li>
+              <li>KiCad基板データ</li>
+              <li>ESP32ファームウェア構成</li>
+            </ul>
+          </div>
+          <div class="status-card todo">
+            <strong>これから確認するもの</strong>
+            <ul>
+              <li>9V、5V、3.3Vの実測</li>
+              <li>ESP32実機BLE接続</li>
+              <li>ギター/ベース音出し</li>
+              <li>フットスイッチ動作</li>
+              <li>Tone Matchの本格解析精度</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>考察</h2>
+        <p>
+          この試作では、音色作成、保存、通信、基板設計を一つのシステムとしてつなげた点が大きな成果である。
+          一方、音のよさや遅延の少なさは、実際のギターやベースをつないで測定しないと判断できない。
+          そのため次の段階では、電源を安全に確認したあと、入力、出力、Bluetooth、音質を順番に検証する。
+        </p>
+      </section>
+
+      <section>
+        <h2>結論</h2>
+        <p>
+          MEFX-S3は、ESP32-S3、専用基板、PCアプリ、BLE通信、DSP処理を組み合わせたマルチエフェクター試作である。
+          現時点で、設計資料とソフトウェアの土台はそろっており、実機組み立てと測定に進める状態になった。
+        </p>
+        <p>
+          今後は、電源確認、ESP32書き込み、BLE接続、音声入出力の順に検証し、最終的にギターとベースの両方で使える試作v1の完成を目指す。
+        </p>
+      </section>
+    </div>
+
+    <div class="foot">
+      <div>
+        <strong>高校生向けの説明:</strong>
+        普通のエフェクターはつまみを回して音を変える。この作品では、そのつまみをアプリのスライダーに置き換え、作った音色をESP32本体に覚えさせる。
+        つまり「アプリで音を設計し、本体だけで演奏に使える」ことを目指している。
+      </div>
+      <div>
+        <strong>参考資料・設計資料</strong>
+        <ol class="ref-list">
+          <li>プロジェクト資料: <span class="code">docs/プロジェクト作業レポート.md</span></li>
+          <li>基板監査資料: <span class="code">docs/pcb-assembly/07_order_package/</span></li>
+          <li>BLE仕様: <span class="code">shared/ble-contract.md</span></li>
+          <li>関連理論: Udo Zolzer編, DAFX: Digital Audio Effects</li>
+          <li>関連理論: M. R. Schroeder, Natural Sounding Artificial Reverberation, 1962</li>
+        </ol>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
