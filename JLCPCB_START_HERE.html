@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MEFX-S3 組立案内・最新製造データ 07</title>
+  <style>
+    body{font-family:"Yu Gothic UI",sans-serif;background:#f4f7f8;color:#172126;margin:0}
+    main{max-width:900px;margin:auto;padding:32px 20px 60px}h1{font-size:28px;margin:0 0 8px}
+    .ok{color:#087443;font-weight:700}.warn{color:#9b341c;font-weight:700}
+    section{background:#fff;border:1px solid #cbd5da;border-radius:8px;padding:18px;margin-top:16px}
+    a{display:inline-block;background:#126a87;color:#fff;text-decoration:none;padding:10px 14px;border-radius:6px;margin:4px 6px 4px 0}
+    li{margin:8px 0}code{background:#edf1f3;padding:2px 5px}
+  </style>
+</head>
+<body><main>
+  <h1>MEFX-S3 組立案内・最新製造データ 07</h1>
+  <p>基板・手はんだ用部品は到着済み。CS4270構成の基板を表向き・直配線で机上確認し、ケースは後回しにします。</p>
+  <p class="warn">旧04/05/06は発注不可。保存済みの設計検査と、実機の測定・音出し確認は別です。</p>
+  <section><h2>最初に行う組立・机上確認</h2>
+    <a href="docs/hardware/16_直配線接続表.txt">1. 直配線接続表</a>
+    <a href="docs/hardware/17_R78向きと直配線図.txt">2. R-78の向きと直配線図</a>
+    <a href="docs/hardware/14_届いた部品_初回実装手順.txt">3. 初回実装手順</a>
+    <a href="docs/hardware/10_基板表向き_ケース後回し手順.txt">表向き・ケース後回しの方針</a>
+    <p>まず1枚だけ、絶縁した作業台で確認します。ESP32を挿さず電源を外して短絡・極性を確認し、初回実装手順に沿って電源を測定してから、電源を切ってESP32を挿します。</p>
+    <p class="warn">接続方法は後続の16・17資料を優先し、J1からJ5へ直配線します。14にある端子台の選択肢は今回採用せず、4本足端子台は使いません。</p>
+  </section>
+  <section><h2>最新製造データ07（再確認用）</h2>
+    <a href="docs/pcb-assembly/README.txt">現行データと検証範囲</a>
+    <a href="docs/pcb-assembly/07_order_package/これをJLCPCBに送る.txt">注文設定と向きの確認事項</a>
+    <a href="docs/pcb-assembly/07_order_package/UPLOAD_THIS_GERBER_07.zip">Gerber ZIP 07</a>
+    <a href="docs/pcb-assembly/07_order_package/UPLOAD_THIS_BOM_07.csv">BOM CSV 07</a>
+    <a href="docs/pcb-assembly/07_order_package/UPLOAD_THIS_CPL_07.csv">CPL CSV 07</a>
+    <p class="warn">再発注する場合も3ファイルを07でそろえ、実装プレビューでU1/U2/U4のPin 1、足とパッド、D1の帯を確認してください。07のU1/U2のCPL回転は270度です。</p>
+  </section>
+  <section><h2>保存済みの設計検査と未確認事項</h2>
+    <a href="docs/pcb-assembly/07_order_package/DRC_full_connection_recheck_07.txt">07 DRC記録</a>
+    <a href="docs/pcb-assembly/07_order_package/ERC_full_connection_recheck_07.txt">07 ERC記録</a>
+    <a href="docs/pcb-assembly/07_order_package/全接続監査サマリー_07.txt">07 全接続監査サマリー</a>
+    <p class="ok">2026-06-26時点の記録: DRC違反0・未配線0、ERCエラー0・警告0。</p>
+    <p>これは設計ファイルの検査記録です。到着基板の電源測定、CS4270経由の音出し、BLE経由の一連の操作は実機で別途確認が必要です。</p>
+  </section>
+  <section><h2>ケースは机上確認の後</h2>
+    <a href="docs/pcb-assembly/07_order_package/case_3d_print/README.txt">07 ケース参考資料</a>
+    <p>今はケースへの固定・追加注文を進めません。基板の動作確認後、現物の干渉と踏み込み強度を確認してから組み込みを判断します。</p>
+  </section>
+  <section><h2>正式設計資料</h2>
+    <a href="docs/hardware/本体回路図.html">JIS回路図</a>
+    <a href="docs/kicad/mefx_s3.kicad_pro">KiCadプロジェクト</a>
+    <a href="docs/hardware/必要パーツ_最小構成.txt">購入部品</a>
+    <a href="docs/hardware/04_最終回路監査.txt">最終監査</a>
+    <a href="docs/pcb-assembly/04_README.txt">旧04版の履歴（発注不可）</a>
+  </section>
+</main></body></html>

@@ -1,0 +1,132 @@
+(footprint "HEADER_3P"
+		(layer "F.Cu")
+		(uuid "7e14d320-9763-4b5c-9681-5590ecf555c5")
+		(at 8 50)
+		(property "Reference" "J_MIC"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(uuid "cc61bdde-7459-48e3-87e0-088ec12848da")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "MIC"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "53a8c47d-df26-49cf-83b9-67a4d88ee8f2")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "efd0abf5-0eef-48fd-aa4f-38c24f1e085e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "54d208d5-26fd-43f4-810a-2ab7d036fa58")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Field4" "VCC"
+			(at -1.1 2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "091fc3c2-4ef0-4226-ae70-501e69b31ba6")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Field5" "GND"
+			(at 1.44 2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "01bdcb6b-d59b-40c6-88de-3f2392e770c4")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Field6" "OUT"
+			(at 3.98 2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "2b547eba-a930-4ff6-b6e7-edcaae5cde56")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.5 -1.5)
+			(end 6.58 4.04)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "c0fffa50-d178-43ab-9138-a4123b278ebf")
+		)
+		(pad "1" thru_hole rect
+			(at 0 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "+3V3_LOGIC")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "053951a7-c154-4dce-b947-aaf57d7554d5")
+		)
+		(pad "2" thru_hole circle
+			(at 2.54 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "GND")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "8b45857b-92a4-4f47-80dd-11f54abb293f")
+		)
+		(pad "3" thru_hole circle
+			(at 5.08 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "MIC_OUT")
+			(pinfunction "3")
+			(pintype "passive")
+			(uuid "2bd8f3d0-13d6-4b5c-8863-51cbf543777b")
+		)
+		(embedded_fonts no)
+	)

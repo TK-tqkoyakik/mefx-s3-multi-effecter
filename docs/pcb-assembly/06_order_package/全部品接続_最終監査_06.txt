@@ -1,0 +1,200 @@
+MEFX-S3 PCBA 05 全部品接続 最終監査
+===================================
+
+作成日
+------
+2026-06-26
+
+結論
+----
+05のKiCad PCBデータ上では、固定穴H1～H4を除く全フットプリントの接続を確認し、
+期待接続表と一致した。
+
+JLCPCBへアップロードする05データは、設計データ上は再注文可能。
+
+ただし、JLCPCB側の2D/3D部品モデルによる回転・足位置の解釈は、アップロード後の
+プレビューで最終確認すること。これは前回U4で問題になった種類の事故を避けるため。
+
+確認対象
+--------
+- KiCad PCB: docs/kicad/mefx_s3.kicad_pcb
+- KiCad Schematic: docs/kicad/mefx_s3.kicad_sch
+- Gerber: UPLOAD_THIS_GERBER_05.zip
+- BOM: UPLOAD_THIS_BOM_05.csv
+- CPL: UPLOAD_THIS_CPL_05.csv
+
+生成した監査ファイル
+--------------------
+- DRC_full_connection_recheck_05.txt
+- ERC_full_connection_recheck_05.txt
+- 全パッド接続一覧_05.csv
+- 全接続監査サマリー_05.txt
+- 全部品接続検証レポート_05.txt
+
+機械チェック結果
+----------------
+- DRC: 0 violations
+- 未配線: 0
+- ERC: 0 errors / 0 warnings
+- PCB SMT references: 59
+- BOM references: 59
+- CPL references: 59
+- PCB/BOM/CPL参照番号: 一致
+- Single-pad named nets: 0
+- NO_NET pads: 39
+
+NO_NETの内訳
+------------
+NO_NETは異常ではなく、次の意図した未接続のみ。
+
+- H1～H4: 機械固定穴
+- U2: 未使用のMUTE/AOUTB系ピン
+- U3: ESP32-S3ソケットの未使用GPIO/端子
+- U4: AP2112K-3.3のNCピン
+
+ブロック別確認
+--------------
+
+1. 電源入力・保護
+- J1: +9V_RAW / GND
+- D1: +9V_RAW -> +9V_PROT
+- C1/C2: +9V_PROTのデカップリング
+
+判定: OK。
+D1のPad 1は+9V_PROT側。SS14のカソード帯が+9V_PROT側に来ることをJLCPCBで確認する。
+
+2. 5V生成
+- U5 R-78E5.0-1.0:
+  - Pin 1: +9V_PROT
+  - Pin 2: GND
+  - Pin 3: +5V
+- C5/C6: +5Vデカップリング
+
+判定: OK。
+
+3. 3.3V生成
+- U4 AP2112K-3.3:
+  - Pin 1: +5V_AUDIO
+  - Pin 2: GND
+  - Pin 3: +5V_AUDIO
+  - Pin 4: NO_NET
+  - Pin 5: +3V3_LOGIC
+- R12: +3V3_LOGIC -> +3V3_DAC
+- C7/C8/C27/C28: 3.3V系デカップリング
+
+判定: OK。
+前回問題になったU4は、05でSOT-23-5/SOT-25用フットプリントに修正済み。
+
+4. TL072アナログ入力
+- U1:
+  - Pin 1: TL072_A_OUT
+  - Pin 2: TL072_A_INN
+  - Pin 3: TL072_A_INP
+  - Pin 4: GND
+  - Pin 5: TL072_B_INP
+  - Pin 6: TL072_B_INN
+  - Pin 7: TL072_B_OUT
+  - Pin 8: +9VA
+- J2: INPUT_TIP / GND
+- J3: MIC_BIAS / GND
+- VBIAS_4V5: R50/R51分圧、C31/C32で安定化
+
+判定: OK。
+楽器入力はA側、マイク入力はB側へ正しく入っている。
+
+5. CS4270 ADC/DAC
+- U2:
+  - Pin 1: DAC_DIN
+  - Pin 2: LRCK
+  - Pin 3: MCLK
+  - Pin 4: BCLK
+  - Pin 5/8/11: +3V3_DAC
+  - Pin 6/20: GND
+  - Pin 7: ADC_DOUT
+  - Pin 14: CODEC_RST
+  - Pin 15: ADC_L
+  - Pin 16: ADC_R
+  - Pin 17: CODEC_VQ
+  - Pin 18: CODEC_FILT
+  - Pin 19: +5V_AUDIO
+  - Pin 22: CODEC_AOUT_L
+
+判定: OK。
+Stand-Alone/I2S/Slave設定用の抵抗も意図通り。
+
+設定抵抗:
+- R30: ADC_DOUT/SDOUTを47kでGNDへ。Slave選択。
+- R60/R61: M1/M0をGNDへ。
+- R62/R63: MDIV1/MDIV2をGNDへ。
+- Pin 11は+3V3_DACへ。I2S形式選択。
+
+6. ESP32-S3ソケット
+- U3:
+  - +5V: U3 pad 1
+  - GND: U3 pad 21
+  - FOOTSW_GPIO: U3 pad 7
+  - MCLK: U3 pad 12
+  - DAC_DIN: U3 pad 13
+  - CODEC_RST: U3 pad 14
+  - ADC_DOUT: U3 pad 16
+  - LRCK: U3 pad 17
+  - BCLK: U3 pad 18
+
+ファームウェア側:
+- GPIO17: MCLK
+- GPIO4: BCLK
+- GPIO5: LRCK
+- GPIO6: ADC_DOUT
+- GPIO16: DAC_DIN
+- GPIO15: CODEC_RST
+- GPIO9: FOOTSW_GPIO
+
+判定: OK。
+基板資料、PCBネット、ファームウェア定義が一致。
+
+7. 出力
+- U2 Pin 22 CODEC_AOUT_L -> C24 -> DAC_LOUT -> R35 -> OUTPUT_TIP
+- R36: OUTPUT_TIPを10kでGNDへ終端
+- C29: OUTPUT_TIPからGNDへの3.3nFフィルタ
+- J5: OUTPUT_TIP / GND
+
+判定: OK。
+
+8. フットスイッチ
+- J4: FOOTSW_GPIO / GND
+- R40: FOOTSW_GPIOを+3V3_LOGICへプルアップ
+- C30: FOOTSW_GPIOからGNDへ簡易デバウンス
+- Firmware: GPIO9、内部プルアップも有効
+
+判定: OK。
+
+注文前の最後の目視確認
+----------------------
+JLCPCBへ05ファイルをアップロードしたら、決済前に以下だけは目視確認する。
+
+1. U4の5本足がSOT-23-5パッド中央付近に乗る。
+2. U4のPin 1がPad 1側。
+3. U2のPin 1マークがPad 1側。
+4. U1のPin 1マークがPad 1側。
+5. D1のカソード帯が+9V_PROT側。
+6. U1/U2/U4/D1が未実装扱いになっていない。
+7. 古い04ではなく05のGerber/BOM/CPLを使っている。
+
+残るリスク
+----------
+設計データ上の接続はOK。
+ただし、実機では次を測定するまで完成判定にはしない。
+
+- 9V-GND短絡なし
+- 5V出力
+- 3.3V出力
+- 4.5V VBIAS
+- CS4270 RESET解除
+- I2Sクロック
+- 入出力音声レベル
+- ノイズ/発熱
+
+最終判定
+--------
+05データは再注文可能。
+各部品の接続は、定義した期待接続表とKiCad PCB実データの照合で一致。

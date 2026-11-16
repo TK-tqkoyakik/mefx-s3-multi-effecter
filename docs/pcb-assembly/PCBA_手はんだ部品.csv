@@ -1,0 +1,13 @@
+Item,Qty,Recommended Mount,Reason,Notes
+ESP32-S3 development board,1,Female pin headers,Module height and board choice vary,Use board exposing GPIO17 GPIO4 GPIO5 GPIO6 GPIO16 GPIO9
+PCM1808 ADC I2S module,1,Female pin headers,Module pinout varies,Must expose SCKI/MCLK
+PCM5102A DAC I2S module,1,Female pin headers,Module pinout varies,SCK to GND and XMT high
+MP1584 5V buck module,1,Female pin headers,Adjustable module must be tuned before connection,Set to 5.0V before ESP32
+6.35mm mono jack,2,Panel wiring,Mechanical stress and enclosure position,Wire to J_IN and J_OUT
+5.5/2.1mm DC jack,1,Panel wiring,Mechanical stress and enclosure position,Center negative pedal supply
+Momentary footswitch NO,1,Panel wiring,Mechanical stress and enclosure position,Wire to J_SW
+MAX4466 or MAX9814 analog mic module,1,Header or panel wiring,Module choice varies,Wire to J_MIC
+Pin headers/sockets,set,Through-hole hand solder,Module sockets,Use female headers where modules should be removable
+M3 screws/standoffs,4,Mechanical,Board mounting,Use insulating standoffs if needed
+M2 screws or nylon ties,set,Mechanical,Module fixing,Use H_ESP32/H_ADC/H_DAC/H_PWR NPTH holes; these holes have no electrical connection
+Adhesive foam tape,set,Mechanical,Module vibration support,Use under ESP32/ADC/DAC modules if screw holes do not match the purchased module

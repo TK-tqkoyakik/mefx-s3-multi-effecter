@@ -1,0 +1,84 @@
+(footprint "C_1206"
+		(layer "F.Cu")
+		(uuid "048a9c4b-a1ee-484e-9165-cc22e99abdfb")
+		(at 20 70)
+		(property "Reference" "C17"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8956c6cf-91de-48af-909c-d9376254ab2f")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "1uF"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "4f9430a4-6338-408c-8588-6b83b0ed93f4")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "ebd568ad-eae5-45a0-a814-23b0a1dcf113")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e9a191ec-613f-47b4-a9b0-fd512d1e3a2c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr smd)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.8 -0.8)
+			(end 1.8 0.8)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "e47da756-e4a9-4fd9-8e3c-e8d18d70e1cc")
+		)
+		(pad "1" smd roundrect
+			(at -1 0)
+			(size 1.5 1.8)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.2)
+			(net "MIC_BIAS")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "bf51f7c6-a9bf-49fc-8afb-495ce1c5ae8d")
+		)
+		(pad "2" smd roundrect
+			(at 1 0)
+			(size 1.5 1.8)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.2)
+			(net "MIC_AC")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "4955092f-e93e-4180-baac-5ef2736241d7")
+		)
+		(embedded_fonts no)
+	)

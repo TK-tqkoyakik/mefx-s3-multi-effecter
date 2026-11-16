@@ -1,0 +1,109 @@
+(footprint "HEADER_2P"
+		(layer "F.Cu")
+		(uuid "4361fec7-505a-42e7-9164-b61cdb72a446")
+		(at 8 14)
+		(property "Reference" "J_DC"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(uuid "13a06ef3-6cd6-4c96-91fc-aa85ddd73a97")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "9V DC"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "94ee9f9f-84fd-4c7e-99be-3637e1a66743")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "6c5b1c3c-7686-4787-b4e5-893d47bffee9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a32812e0-1bd3-423a-bedb-5a598ae84979")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Field4" "+9V"
+			(at -1.1 2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "52ffde1e-27c9-4b33-933b-c0578983d3ac")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Field5" "GND"
+			(at 1.44 2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "028a25fb-972e-4606-aea8-4c957c0f3542")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.5 -1.5)
+			(end 4.04 4.04)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "1316efa5-a609-4329-8679-1717cce6041c")
+		)
+		(pad "1" thru_hole rect
+			(at 0 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "+9V_RAW")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "7249ad45-2c90-4df8-876f-ebf4eb3a056a")
+		)
+		(pad "2" thru_hole circle
+			(at 2.54 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "GND")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "16ddc466-f46c-49b7-91e9-35b749ea0dae")
+		)
+		(embedded_fonts no)
+	)

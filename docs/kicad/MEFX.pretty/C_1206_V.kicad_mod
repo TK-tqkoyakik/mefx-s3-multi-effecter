@@ -1,0 +1,72 @@
+(footprint "C_1206_V"
+		(layer "F.Cu")
+		(uuid "cd18f542-a888-41b0-810d-3276b55a8cf4")
+		(at 80 52)
+		(attr smd)
+		(property "Reference" "C20"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d71680a8-e387-4cbb-8819-14bfda00c154")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "10uF 25V X7R"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "67c0add3-8c89-41c4-9acd-beecc86c13bd")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "MEFX:C_1206_V"
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e1c45c98-7ab4-45e7-975b-f0a90e449311")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(fp_rect
+			(start -0.8 -1.8)
+			(end 0.8 1.8)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "7d956045-b0f7-474f-a941-5e743a6dc7ca")
+		)
+		(pad "1" smd roundrect
+			(at 0 -1)
+			(size 1.8 1.5)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.2)
+			(net 44 "CODEC_VQ")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "da9373b7-fe98-4a5e-96af-098740e0d21f")
+		)
+		(pad "2" smd roundrect
+			(at 0 1)
+			(size 1.8 1.5)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.2)
+			(net 1 "GND")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "d9ef1281-88ab-4885-ab4b-d9270efe6bd0")
+		)
+	)

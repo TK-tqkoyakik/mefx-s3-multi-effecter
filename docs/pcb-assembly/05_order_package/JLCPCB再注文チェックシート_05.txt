@@ -1,0 +1,90 @@
+MEFX-S3 PCBA 05 JLCPCB再注文チェックシート
+===========================================
+
+今回アップロードするファイル
+--------------------------
+必ずこの3つだけを使う。
+
+1. UPLOAD_THIS_GERBER_05.zip
+2. UPLOAD_THIS_BOM_05.csv
+3. UPLOAD_THIS_CPL_05.csv
+
+場所:
+docs/pcb-assembly/05_order_package/
+
+使わないファイル
+----------------
+04_order_package 内のファイルは今回使わない。
+古い注文のBOM/CPL/部品配置を流用しない。
+
+今回の重要修正
+--------------
+U4のLDOレギュレータを、JLCPCBで実装しやすい標準SOT-23-5へ修正済み。
+
+U4:
+- 部品: AP2112K-3.3TRG1
+- LCSC: C51118
+- フットプリント: SOT-23-5
+- CPL: X=100.000mm, Y=-11.000mm, Top, Rotation=0.0
+
+U4ピン接続:
+- Pin 1 VIN  -> +5V_AUDIO
+- Pin 2 GND  -> GND
+- Pin 3 EN   -> +5V_AUDIO
+- Pin 4 NC   -> 未接続
+- Pin 5 VOUT -> +3V3_LOGIC
+
+ローカル検査結果
+----------------
+- KiCad DRC: 0 violations
+- 未配線: 0
+- KiCad ERC: 0 errors / 0 warnings
+- PCB/BOM/CPLのSMT部品参照: 59個ですべて一致
+- U4 Pad 1～5のネット接続: 正常
+- D1カソード向き: 確認済み
+- U1 1番ピン: 確認済み
+- U2 1番ピン: 確認済み
+
+JLCPCB画面で必ず確認すること
+----------------------------
+1. Gerberアップロード後、基板サイズが約 150mm x 90mm で認識されること。
+2. PCB数量は必要数にする。試作なら通常は5枚。
+3. PCBAを有効にする。
+4. Assemble side は Top。
+5. BOMに UPLOAD_THIS_BOM_05.csv をアップロードする。
+6. CPLに UPLOAD_THIS_CPL_05.csv をアップロードする。
+7. 部品表画面でU4が AP2112K-3.3 / C51118 / SOT-23-5 になっていること。
+8. 2D/3D部品配置画面で、U4の5本の足がPCBパッド中央付近に重なること。
+9. U4の1番ピンマークと基板側の1番ピン位置が合うこと。
+10. D1、U1、U2の向きもプレビューで確認してから決済すること。
+
+安価寄りの推奨設定
+------------------
+- Base Material: FR-4
+- Layers: 2
+- Thickness: 1.6mm
+- Surface Finish: LeadFree HASL
+- Copper Weight: 1oz
+- Solder Mask: Green
+- Silkscreen: White
+- Via Covering: Tented
+- Electrical Test: Yes
+- Castellated Holes: No
+- Edge Plating: No
+- Impedance Control: No
+- PCBA Type: Economic
+- Assembly Side: Top
+- Parts Selection: JLCPCBによる、または自動選択後に手動確認
+- Confirm Parts Placement: Yes
+
+U4で再び警告が出た場合
+----------------------
+決済前なら注文を進めず、U4のプレビュー画像を保存して確認する。
+今回の05ではU4フットプリント自体を修正しているため、04と同じ
+「足がパッドの端にしか乗らない」状態なら、BOM/CPL/部品選択の
+取り違えが疑わしい。
+
+最終判断
+--------
+JLCPCBの2D/3DプレビューでU4の足が中央付近に重なっていれば、
+05データで再注文してよい。

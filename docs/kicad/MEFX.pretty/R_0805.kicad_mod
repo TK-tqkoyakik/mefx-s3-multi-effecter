@@ -1,0 +1,84 @@
+(footprint "R_0805"
+		(layer "F.Cu")
+		(uuid "032d9462-9f2e-499f-a7a0-a74b1c840938")
+		(at 32 37)
+		(property "Reference" "R50"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "df6d4672-1a6b-4500-83e7-b17b66b90033")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "c8de6181-a1cf-4291-a467-b8b87397b702")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "9407b87c-6735-4ae0-bb2f-f0a000e906bf")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "cf8a87df-4ea5-495b-bd62-a6f2e223a859")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr smd)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.8 -0.8)
+			(end 1.8 0.8)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "b44e23a3-430e-42cc-a361-fa2116d195c5")
+		)
+		(pad "1" smd roundrect
+			(at -1 0)
+			(size 1.1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.2)
+			(net "+9VA")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "a20f7f97-3f62-428f-b0c4-d0ccfd633822")
+		)
+		(pad "2" smd roundrect
+			(at 1 0)
+			(size 1.1 1.3)
+			(layers "F.Cu" "F.Mask" "F.Paste")
+			(roundrect_rratio 0.2)
+			(net "VBIAS_4V5")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "0a1479dd-566e-449c-8fb8-280a0038021b")
+		)
+		(embedded_fonts no)
+	)

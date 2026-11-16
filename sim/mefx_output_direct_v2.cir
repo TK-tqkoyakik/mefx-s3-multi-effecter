@@ -1,0 +1,19 @@
+* MEFX-S3 v2 direct DAC output simulation
+* PCM5102A LOUT -> 100 ohm isolation -> output jack.
+
+VDAC dac 0 AC 1 SIN(0 1 1k)
+
+* Direct output path and amp/pedal input load
+R35 dac out_tip 100
+R36 out_tip 0 100k
+RAMP out_tip 0 1Meg
+
+.ac dec 200 1 1Meg
+.tran 0 20m 0 5u
+
+.control
+run
+print ac vdb(out_tip)
+.endc
+
+.end

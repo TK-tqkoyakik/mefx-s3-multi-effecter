@@ -1,0 +1,276 @@
+MEFX-S3 PCBA 05 向きあり部品 最終確認レポート
+=============================================
+
+作成日
+------
+2026-06-26
+
+結論
+----
+向きが問題になるSMT部品は、今回のBOMでは主に次の4種類。
+
+- D1: SS14 ショットキーダイオード
+- U1: TL072CDT オペアンプ
+- U2: CS4270-CZZR オーディオCODEC
+- U4: AP2112K-3.3TRG1 3.3V LDO
+
+KiCad基板データ、BOM、CPL、LCSC登録データシートを照合した結果、
+05データ上のピン番号とネット接続は正しい。
+
+特に前回問題になったU4は、05で標準SOT-23-5フットプリントへ修正済み。
+電気的接続も、AP2112K-3.3TRG1のSOT25ピン配置と一致している。
+
+ただし、JLCPCBの部品モデル側の回転解釈は、アップロード後の2D/3D
+プレビューが最終確認になる。注文前に本レポートの「JLCPCB画面での確認」を
+必ず見ること。
+
+保存したデータシート
+--------------------
+docs/hardware/datasheets_05/
+
+- AP2112_Diodes.pdf
+- C51118_lcsc.pdf
+- C1323229_lcsc.pdf
+- C6961_lcsc.pdf
+- C2480_lcsc.pdf
+
+再検査結果
+----------
+- DRC: 0 violations
+- 未配線: 0
+- ERC: 0 errors / 0 warnings
+- PCB/BOM/CPLのSMT参照番号: 59個ですべて一致
+- BOM上の向きあり部品: D1/U1/U2/U4
+- CPL上の向きあり部品: すべて Top / Rotation 0.0
+
+1. U4 AP2112K-3.3TRG1 / C51118
+------------------------------
+役割:
++5V_AUDIOから+3V3_LOGICを作る3.3V LDO。
+
+LCSC登録:
+- C51118
+- AP2112K-3.3TRG1
+- SOT-25-5
+
+データシート根拠:
+- AP2112はSOT25を採用。
+- Diodes資料では、以前SOT-23-5と呼ばれていたパッケージがSOT25へ名称変更されたと説明されている。
+- SOT25のPin Descriptions:
+  - Pin 1: VIN
+  - Pin 2: GND
+  - Pin 3: EN
+  - Pin 4: NC
+  - Pin 5: VOUT
+
+05基板のU4:
+- Footprint: Package_TO_SOT_SMD:SOT-23-5
+- Pad size: 1.325mm x 0.600mm
+- Pin pitch: 0.950mm
+- CPL: U4, X=100.000mm, Y=-11.000mm, Top, Rotation=0.0
+
+05基板ネット:
+- Pad 1: +5V_AUDIO
+- Pad 2: GND
+- Pad 3: +5V_AUDIO
+- Pad 4: NC
+- Pad 5: +3V3_LOGIC
+
+判定:
+OK。
+データシートの1=VIN,2=GND,3=EN,4=NC,5=VOUTと一致。
+前回04のような「部品足がパッド外側に寄る」寸法問題は05で解消済み。
+
+JLCPCB画面での確認:
+- U4の5本の足が、5つのSOT-23-5パッド中央付近に乗ること。
+- U4のPin 1マークが、Pad 1側に来ること。
+- Pad 1側は+5V_AUDIO、Pad 5側は+3V3_LOGIC。
+- もしU4が180度回って見える場合は、そのまま決済しない。
+
+2. U2 CS4270-CZZR / C1323229
+----------------------------
+役割:
+ADC/DAC一体型オーディオCODEC。
+
+LCSC登録:
+- C1323229
+- CS4270-CZZR
+- TSSOP-24
+- Supply: 3.14V～5.25V
+
+データシート根拠:
+Stand-Alone Modeの主要ピン:
+- Pin 1: SDIN
+- Pin 2: LRCK
+- Pin 3: MCLK
+- Pin 4: SCLK
+- Pin 5: VD
+- Pin 6: DGND
+- Pin 7: SDOUT / M/S
+- Pin 8: VLC
+- Pin 14: RST
+- Pin 15: AINA
+- Pin 16: AINB
+- Pin 17: VQ
+- Pin 18: FILT+
+- Pin 19: VA
+- Pin 20: AGND
+- Pin 22: AOUTA
+
+05基板のU2:
+- Footprint: MEFX:TSSOP-24_CS4270
+- Pad size: 1.700mm x 0.400mm
+- Pitch: 0.650mm
+- CPL: U2, X=90.000mm, Y=-55.000mm, Top, Rotation=0.0
+
+05基板ネット:
+- Pad 1: DAC_DIN
+- Pad 2: LRCK
+- Pad 3: MCLK
+- Pad 4: BCLK
+- Pad 5: +3V3_DAC
+- Pad 6: GND
+- Pad 7: ADC_DOUT
+- Pad 8: +3V3_DAC
+- Pad 14: CODEC_RST
+- Pad 15: ADC_L
+- Pad 16: ADC_R
+- Pad 17: CODEC_VQ
+- Pad 18: CODEC_FILT
+- Pad 19: +5V_AUDIO
+- Pad 20: GND
+- Pad 22: CODEC_AOUT_L
+
+判定:
+OK。
+データシートのTSSOP-24ピン配置と、KiCadのPad番号/ネットが一致。
+
+注意:
+JLCPCBで以前 “Soldering area is too small” の警告が出ていた部品。
+05のパッドは1.70mm x 0.40mmで、0.65mmピッチとしては無理に広げない判断。
+JLCPCB画面で Assembly Yes になっていること、足が全パッドに乗ることを確認する。
+
+JLCPCB画面での確認:
+- U2の1番ピンドット/切り欠きが、基板側Pad 1側に来ること。
+- 24本の足が各パッド中央付近に乗ること。
+- U2が未実装扱いになっていないこと。
+
+3. U1 TL072CDT / C6961
+---------------------
+役割:
+楽器入力/マイク入力のアナログプリアンプ、バッファ。
+
+LCSC登録:
+- C6961
+- TL072CDT
+- SO-8
+- Single Supply: 6V～36V
+
+データシート根拠:
+Pin connections top view:
+- Pin 1: Output 1
+- Pin 2: Inverting input 1
+- Pin 3: Non-inverting input 1
+- Pin 4: VCC-
+- Pin 5: Non-inverting input 2
+- Pin 6: Inverting input 2
+- Pin 7: Output 2
+- Pin 8: VCC+
+
+05基板のU1:
+- Footprint: MEFX:SOIC-8
+- Pad size: 1.500mm x 0.600mm
+- Pitch: 1.270mm
+- CPL: U1, X=37.000mm, Y=-49.000mm, Top, Rotation=0.0
+
+05基板ネット:
+- Pad 1: TL072_A_OUT
+- Pad 2: TL072_A_INN
+- Pad 3: TL072_A_INP
+- Pad 4: GND
+- Pad 5: TL072_B_INP
+- Pad 6: TL072_B_INN
+- Pad 7: TL072_B_OUT
+- Pad 8: +9VA
+
+判定:
+OK。
+TL072のSO-8ピン配置と、KiCadのPad番号/ネットが一致。
+9V単電源動作もTL072の6V～36V範囲内。
+
+JLCPCB画面での確認:
+- U1の1番ピンドット/切り欠きが、基板側Pad 1側に来ること。
+- Pin 4がGND側、Pin 8が+9VA側になっていること。
+- 8本の足がSOIC-8パッド中央付近に乗ること。
+
+4. D1 SS14 / C2480
+------------------
+役割:
+9V入力の逆接保護用ショットキーダイオード。
+
+LCSC登録:
+- C2480
+- SS14
+- SMA(DO-214AC)
+- 40V / 1A
+
+データシート根拠:
+- Package: DO-214AC/SMA
+- Polarity: Color band denotes cathode end
+- SS14は40V品
+- 平均整流電流1A
+
+05基板のD1:
+- Footprint: MEFX:D_SMA
+- Pad size: 1.600mm x 1.800mm
+- CPL: D1, X=78.000mm, Y=-10.000mm, Top, Rotation=0.0
+
+05基板ネット:
+- Pad 1: +9V_PROT
+- Pad 2: +9V_RAW
+
+判定:
+OK。
+基板上ではPad 1をカソード側として+9V_PROTへ接続している。
+逆接保護の向きとして妥当。
+
+JLCPCB画面での確認:
+- D1本体の帯マークが+9V_PROT側に来ること。
+- 帯マークが+9V_RAW側に見える場合は、そのまま決済しない。
+
+向きなしとして扱える部品
+------------------------
+次の部品は通常のSMT実装では向きなし。
+
+- 抵抗 R*
+- 100nF/220pF/1uF/2.2nF/3.3nF/10uF/47uF のセラミックコンデンサ
+
+注意:
+電解コンデンサやタンタルではないため、極性方向はない。
+ただし容量値とパッケージサイズはBOM上で確認済み。
+
+注文前の最終判断
+----------------
+現時点の05ファイルは再注文可能。
+ただし決済前にJLCPCBの2D/3Dプレビューで、以下を必ず確認する。
+
+1. U4の足がSOT-23-5パッド中央付近に重なる。
+2. U4のPin 1がPad 1側。
+3. U2のPin 1マークがPad 1側。
+4. U1のPin 1マークがPad 1側。
+5. D1の帯マークが+9V_PROT側。
+6. U1/U2/U4/D1が未実装扱いになっていない。
+7. 古い04ファイルではなく、05のGerber/BOM/CPLを使っている。
+
+もしプレビューで違和感がある場合
+--------------------------------
+すぐ注文しない。
+スクリーンショットを保存して、次のどれかを判断する。
+
+- 位置ずれ: CPL座標/回転の問題
+- 足がパッドから外れる: フットプリント寸法の問題
+- Pin 1や帯だけ逆: Rotationの問題
+- 部品候補が違う: BOM/LCSC品番の問題
+
+05ではU4寸法問題は修正済みなので、もしU4が再び合わない場合は、
+JLCPCB側で旧04の部品配置情報を再利用していないかを最優先で疑う。

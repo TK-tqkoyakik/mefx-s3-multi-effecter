@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "MEFX")(type "KiCad")(uri "${KIPRJMOD}/MEFX.pretty")(options "")(descr "MEFX local footprints"))
+)

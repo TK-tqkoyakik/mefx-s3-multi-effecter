@@ -1,0 +1,70 @@
+(footprint "NPTH_2_4MM"
+		(layer "F.Cu")
+		(uuid "5508065d-18a8-4cf5-9658-42b4ad56e686")
+		(at 62 52)
+		(property "Reference" "H_ESP32_4"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(uuid "68eae362-be06-4043-ad84-5ec90790c170")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "ESP32_FIX"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "f9ae9d5b-61dc-4e04-952e-624b7c204476")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "078d5948-85fd-427c-b869-8fccd50794b5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "4012d803-b283-4090-b64f-ac00590d68d8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -2.2 -2.2)
+			(end 2.2 2.2)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "e6130f32-66f7-4ad7-a0a8-8c42cfc22c42")
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 2.4 2.4)
+			(drill 2.4)
+			(layers "*.Cu" "*.Mask")
+			(uuid "c8ba7e2a-abc5-4bdb-83d7-6bd6f03d6a97")
+		)
+		(embedded_fonts no)
+	)

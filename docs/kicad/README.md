@@ -1,12 +1,11 @@
-# KiCad Project Notes
+# KiCad 正式設計 04
 
-Open `mefx_s3.kicad_pro` in KiCad 8 or newer and create the schematic around these sheets:
+KiCad 10以降で `mefx_s3.kicad_pro` を開いてください。
 
-- `power`: 9 V protection, 5 V, 3.3 V, virtual ground.
-- `analog_input`: jack, TL072 preamp, ADC input filter.
-- `codec_digital`: PCM1808, PCM5102A, ESP32-S3 I2S wiring.
-- `analog_output`: DAC output filter, TL072 buffer, output jack.
-- `controls`: footswitch and optional LEDs.
+- `mefx_s3.kicad_sch`: 正式回路図。ERCエラー0、警告0。
+- `mefx_s3.kicad_pcb`: 正式2層基板。DRC違反0、未配線0。
+- `MEFX.pretty`: この設計で使うローカルフットプリント。
+- `fp-lib-table`: ローカルフットプリントライブラリ設定。
 
-The Markdown hardware documents are the source of truth until the KiCad schematic symbols are fully
-placed and checked.
+JLCPCBへ送るデータはKiCadフォルダから直接選ばず、
+`docs/pcb-assembly/04_order_package` の `UPLOAD_THIS_..._04` 3ファイルを使用します。

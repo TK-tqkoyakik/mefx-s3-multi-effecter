@@ -1,0 +1,71 @@
+(footprint "MOUNT_M3"
+		(layer "F.Cu")
+		(uuid "72121281-0cbc-4e3b-a27d-8b73cd83d787")
+		(at 5 38)
+		(property "Reference" "H1"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "6b9ff31b-72cf-40f5-85e9-deabd08d9920")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "M3"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "6cc558b2-45ce-40f4-b18c-d396605d2325")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "2bf25da7-48a6-4afb-ad5d-75ea733693f5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "8bfea33d-4188-4cbc-9884-2a0d0181ce03")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -3.2 -3.2)
+			(end 3.2 3.2)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "2e55066c-dc14-46c0-8f6c-971b4ff29744")
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 3.2 3.2)
+			(drill 3.2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "49ea3973-1068-4367-a1a8-fb5e58fc9ce6")
+		)
+		(embedded_fonts no)
+	)

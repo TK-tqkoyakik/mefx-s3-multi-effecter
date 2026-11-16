@@ -1,0 +1,83 @@
+MEFX-S3 PCBA 05 全部品接続検証レポート
+=======================================
+
+2端子/3端子部品
+---------------
+OK  C1: OK ['+9V_PROT', 'GND']
+OK  C2: OK ['+9V_PROT', 'GND']
+OK  C3: OK ['+9VA', 'GND']
+OK  C4: OK ['+9VA', 'GND']
+OK  C5: OK ['+5V', 'GND']
+OK  C6: OK ['+5V', 'GND']
+OK  C7: OK ['+3V3_LOGIC', 'GND']
+OK  C8: OK ['+3V3_LOGIC', 'GND']
+OK  C10: OK ['INPUT_TIP', 'IN_AC']
+OK  C13: OK ['TL072_A_OUT', 'ADC_L_PRE']
+OK  C14: OK ['ADC_L', 'GND']
+OK  C17: OK ['MIC_BIAS', 'MIC_AC']
+OK  C18: OK ['TL072_B_OUT', 'ADC_R_PRE']
+OK  C19: OK ['ADC_R', 'GND']
+OK  C20: OK ['CODEC_VQ', 'GND']
+OK  C22: OK ['CODEC_FILT', 'GND']
+OK  C24: OK ['CODEC_AOUT_L', 'DAC_LOUT']
+OK  C27: OK ['+3V3_DAC', 'GND']
+OK  C28: OK ['GND', '+3V3_DAC']
+OK  C29: OK ['OUTPUT_TIP', 'GND']
+OK  C30: OK ['FOOTSW_GPIO', 'GND']
+OK  C31: OK ['VBIAS_4V5', 'GND']
+OK  C32: OK ['VBIAS_4V5', 'GND']
+OK  C33: OK ['CODEC_VQ', 'GND']
+OK  C34: OK ['CODEC_FILT', 'GND']
+OK  C35: OK ['+5V_AUDIO', 'GND']
+OK  C36: OK ['+5V_AUDIO', 'GND']
+OK  D1: OK ['+9V_PROT', '+9V_RAW']
+OK  J1: OK ['+9V_RAW', 'GND']
+OK  J2: OK ['INPUT_TIP', 'GND']
+OK  J3: OK ['MIC_BIAS', 'GND']
+OK  J4: OK ['FOOTSW_GPIO', 'GND']
+OK  J5: OK ['OUTPUT_TIP', 'GND']
+OK  R1: OK ['INPUT_TIP', 'GND']
+OK  R2: OK ['IN_AC', 'VBIAS_4V5']
+OK  R3: OK ['IN_AC', 'TL072_A_INP']
+OK  R4: OK ['TL072_A_OUT', 'TL072_A_INN']
+OK  R5: OK ['TL072_A_INN', 'VBIAS_4V5']
+OK  R6: OK ['ADC_L_PRE', 'ADC_L']
+OK  R7: OK ['ADC_R_PRE', 'ADC_R']
+OK  R8: OK ['+9V_PROT', '+9VA']
+OK  R9: OK ['+5V', '+5V_AUDIO']
+OK  R12: OK ['+3V3_LOGIC', '+3V3_DAC']
+OK  R20: OK ['+5V_AUDIO', 'MIC_BIAS']
+OK  R21: OK ['MIC_AC', 'VBIAS_4V5']
+OK  R22: OK ['MIC_AC', 'TL072_B_INP']
+OK  R23: OK ['TL072_B_OUT', 'TL072_B_INN']
+OK  R24: OK ['TL072_B_INN', 'VBIAS_4V5']
+OK  R30: OK ['ADC_DOUT', 'GND']
+OK  R31: OK ['CODEC_RST', 'GND']
+OK  R35: OK ['DAC_LOUT', 'OUTPUT_TIP']
+OK  R36: OK ['OUTPUT_TIP', 'GND']
+OK  R40: OK ['+3V3_LOGIC', 'FOOTSW_GPIO']
+OK  R50: OK ['+9VA', 'VBIAS_4V5']
+OK  R51: OK ['VBIAS_4V5', 'GND']
+OK  R60: OK ['CODEC_M1', 'GND']
+OK  R61: OK ['CODEC_M0', 'GND']
+OK  R62: OK ['CODEC_MDIV1', 'GND']
+OK  R63: OK ['CODEC_MDIV2', 'GND']
+OK  R64: OK ['ADC_L', 'GND']
+OK  R65: OK ['ADC_R', 'GND']
+OK  U5: OK ['+9V_PROT', 'GND', '+5V']
+
+IC/ソケットのピン番号別確認
+---------------------------
+OK  U1: OK
+OK  U2: OK
+OK  U3: OK
+OK  U4: OK
+
+チェック対象の網羅性
+--------------------
+OK: 固定穴H1-H4を除く全フットプリントを監査対象に含めた。
+OK: 期待接続表にある部品はすべて基板上に存在。
+
+判定
+----
+OK: 定義した全部品接続はKiCad PCB実データと一致。

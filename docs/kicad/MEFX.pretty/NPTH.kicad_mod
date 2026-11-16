@@ -1,0 +1,70 @@
+(footprint "NPTH"
+		(layer "F.Cu")
+		(uuid "017465dc-268c-4650-bd85-f76048858774")
+		(at 37 7)
+		(property "Reference" "H_PWR_1"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(uuid "8bb96ab7-d97f-4d02-9ded-15411a202b2a")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "BUCK_FIX"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "02e23d88-4466-4417-b6f5-f49e1074a592")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "802bf7d7-a39a-4b6f-98dc-cfd67b721bb2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "fd9d7a90-f282-4d80-a133-62d170cea30a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -2 -2)
+			(end 2 2)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "1ad6a952-d33b-4acf-b84f-2e15fadddc92")
+		)
+		(pad "" np_thru_hole circle
+			(at 0 0)
+			(size 2 2)
+			(drill 2)
+			(layers "*.Cu" "*.Mask")
+			(uuid "612c6f10-20bf-4f06-a6cf-a9e5544a397b")
+		)
+		(embedded_fonts no)
+	)

@@ -1,0 +1,24 @@
+* MEFX-S3 v2 virtual ground / VBIAS simple simulation
+* This file models the fallback 10k/10k divider.
+* TLE2426 or a buffered rail splitter is preferred for the real build.
+
+V9V v9 0 DC 9 AC 0
+
+* Fallback divider
+R50 v9 vbias_raw 10k
+R51 vbias_raw 0 10k
+C9A vbias_raw 0 47u
+C9B vbias_raw 0 100n
+
+* Approximate dynamic load from op-amp feedback/bias networks
+I_LOAD vbias_raw 0 PULSE(0 20u 1m 10u 10u 1m 2m)
+
+.op
+.tran 0 20m 0 10u
+
+.control
+run
+print v(vbias_raw)
+.endc
+
+.end

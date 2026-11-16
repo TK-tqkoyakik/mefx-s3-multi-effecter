@@ -1,0 +1,45 @@
+* MEFX-S3 v2 input preamp simulation
+* Open with ngspice/LTspice-compatible SPICE.
+* This models the TL072 stage as an ideal high-gain op amp for AC response checks.
+
+.param VBIAS=4.5
+
+VCC vcc 0 DC 9
+VBIAS_SRC vbias 0 DC {VBIAS}
+VIN in 0 AC 1 SIN(0 0.1 1k)
+
+* Input jack and bias
+R1 in 0 1Meg
+C10 in in_ac 100n
+R2 in_ac vbias 1Meg
+R3 in_ac u1p 1k
+C11 u1p vbias 220p
+
+* TL072 A non-inverting gain = 1 + R4/R5 = 2
+XU1A u1p u1n pre_out opamp_ideal
+R4 pre_out u1n 100k
+R5 u1n vbias 100k
+C12 pre_out u1n 47p
+
+* AC coupling and optional anti-RF filter near PCM1808 LIN
+C13 pre_out adc_pre 1u
+R6 adc_pre adc_l 100
+C14 adc_l 0 10n
+R_ADC_BIAS adc_l 0 1Meg
+
+.ac dec 200 1 1Meg
+.tran 0 20m 0 5u
+
+.subckt opamp_ideal inp inn out
+EGAIN nraw 0 inp inn 1e6
+ROUT nraw out 100
+COUT out 0 10p
+RLOAD out 0 100Meg
+.ends opamp_ideal
+
+.control
+run
+print ac vdb(pre_out) vdb(adc_l)
+.endc
+
+.end

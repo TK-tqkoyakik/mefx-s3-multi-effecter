@@ -1,0 +1,243 @@
+MEFX-S3 PCBA 05 部品仕様・配線・寸法の再監査
+============================================
+
+結論
+----
+05データは、前回問題になったU4のフットプリントを修正済み。
+KiCad上の配線、BOM、CPL、主要部品のピン配置、パッド寸法を再確認した範囲では、
+JLCPCBへ再注文してよい状態。
+
+ただし、最終的な実装可否はJLCPCBアップロード後の2D/3D実装プレビューで、
+U4/U1/U2/D1の足とパッドの重なりを目視確認してから確定する。
+
+使用した確認元
+--------------
+- AP2112: Diodes Incorporated AP2112 datasheet
+  https://www.diodes.com/assets/Datasheets/AP2112.pdf
+- AP2112 JLCPCB/LCSC登録情報:
+  https://www.lcsc.com/product-detail/Linear-Voltage-Regulators-LDO_Diodes-Incorporated-AP2112K-3-3TRG1_C51118.html
+- TL072: STMicroelectronics TL072 datasheet
+  https://www.st.com/resource/en/datasheet/tl072.pdf
+- CS4270: docs/hardware/datasheets_02/CS4270.pdf
+- R-78E: docs/hardware/datasheets_02/R-78E-1.0.pdf
+- KiCad実データ: docs/kicad/mefx_s3.kicad_pcb
+- 注文データ: UPLOAD_THIS_GERBER_05.zip / UPLOAD_THIS_BOM_05.csv / UPLOAD_THIS_CPL_05.csv
+
+検査コマンド結果
+----------------
+- KiCad DRC: 0 violations
+- 未配線: 0
+- KiCad ERC: 0 errors / 0 warnings
+- PCB/BOM/CPLのSMT参照番号: 59個ですべて一致
+- U4ネット: 指定通り
+- 主要フットプリント監査: U1/U2/U4/D1はOK
+
+1. U4 AP2112K-3.3TRG1
+---------------------
+役割:
++5V_AUDIOから+3V3_LOGICを作る3.3V LDOレギュレータ。
+ESP32周辺やCS4270デジタル系の3.3V電源を作る重要部品。
+
+データシート/登録情報:
+- AP2112は600mA級LDO。
+- LCSC C51118は AP2112K-3.3TRG1。
+- LCSC登録パッケージは SOT-25-5。
+- Diodes公式資料ではSOT25は以前SOT-23-5と呼ばれていたパッケージ。
+- SOT25ピンは 1=VIN、2=GND、3=EN、4=NC、5=VOUT。
+- 推奨入力/出力コンデンサは1uF以上。X5R/X7R系セラミック推奨。
+
+05基板:
+- フットプリント: Package_TO_SOT_SMD:SOT-23-5
+- パッド寸法: 1.325mm x 0.600mm
+- 左右パッド中心間隔: 2.275mm
+- 縦ピッチ: 0.950mm
+- CPL: X=100.000mm, Y=-11.000mm, Top, Rotation=0.0
+
+ネット:
+- Pad 1: +5V_AUDIO
+- Pad 2: GND
+- Pad 3: +5V_AUDIO
+- Pad 4: NC
+- Pad 5: +3V3_LOGIC
+
+判定:
+OK。前回04で問題になった「左右パッドが外側に広すぎる」状態は解消済み。
+JLCPCB画面ではU4の足が5個ともパッド中央付近に重なることを必ず確認する。
+
+2. U2 CS4270-CZZR
+-----------------
+役割:
+ADC/DAC一体型のオーディオCODEC。
+楽器/マイク入力をADCでESP32へ渡し、ESP32処理後の音をDACで出力する。
+
+データシート確認:
+- パッケージ: 24-TSSOP。
+- Pin 1: SDIN、基板ではDAC_DIN。
+- Pin 2: LRCK。
+- Pin 3: MCLK。
+- Pin 4: SCLK/BCLK。
+- Pin 5: VD。
+- Pin 6: DGND。
+- Pin 7: SDOUT、Stand-AloneではM/S設定兼用。
+- Pin 8: VLC。
+- Pin 14: RST。
+- Pin 15/16: AINA/AINB。
+- Pin 17: VQ。
+- Pin 18: FILT+。
+- Pin 19: VA。
+- データシートはVQ/FILT+のデカップリングを近くに置くこと、電源デカップリングを近くに置くことを要求。
+- Stand-Alone Slave選択はSDOUT/M/Sを47kΩでプルダウン。
+
+05基板:
+- フットプリント: MEFX:TSSOP-24_CS4270
+- パッド寸法: 1.700mm x 0.400mm
+- ピッチ: 0.650mm
+- CPL: X=90.000mm, Y=-55.000mm, Top, Rotation=0.0
+
+主要ネット:
+- Pad 1: DAC_DIN
+- Pad 2: LRCK
+- Pad 3: MCLK
+- Pad 4: BCLK
+- Pad 5/8/11: +3V3_DAC
+- Pad 6/20: GND
+- Pad 7: ADC_DOUT
+- Pad 14: CODEC_RST
+- Pad 15: ADC_L
+- Pad 16: ADC_R
+- Pad 17: CODEC_VQ
+- Pad 18: CODEC_FILT
+- Pad 19: +5V_AUDIO
+- Pad 22: CODEC_AOUT_L
+
+判定:
+OK。ただしJLCPCBで以前 “Soldering area is too small” 警告が出た箇所なので、
+アップロード後にU2が Assembly: Yes になっていることを再確認する。
+パッド幅を広げると0.65mmピッチで隣接クリアランスが厳しくなるため、
+05では1.70mm x 0.40mmを維持する判断が妥当。
+
+3. U1 TL072CDT
+--------------
+役割:
+楽器入力とマイク入力のアナログプリアンプ/バッファ。
+9V単電源で、4.5V仮想GNDを基準にオーディオ信号を扱う。
+
+データシート確認:
+- SO8。
+- Pin 1: Output 1。
+- Pin 2: Inverting input 1。
+- Pin 3: Non-inverting input 1。
+- Pin 4: VCC-。
+- Pin 5: Non-inverting input 2。
+- Pin 6: Inverting input 2。
+- Pin 7: Output 2。
+- Pin 8: VCC+。
+- 動作電源範囲は6V～36V。
+
+05基板:
+- フットプリント: MEFX:SOIC-8
+- パッド寸法: 1.500mm x 0.600mm
+- ピッチ: 1.270mm
+- CPL: X=37.000mm, Y=-49.000mm, Top, Rotation=0.0
+
+ネット:
+- Pad 1: TL072_A_OUT
+- Pad 2: TL072_A_INN
+- Pad 3: TL072_A_INP
+- Pad 4: GND
+- Pad 5: TL072_B_INP
+- Pad 6: TL072_B_INN
+- Pad 7: TL072_B_OUT
+- Pad 8: +9VA
+
+判定:
+OK。SOIC-8寸法、ピン番号、電源電圧は仕様範囲内。
+ただしTL072はレールtoレールではないので、強すぎる入力ではクリップする可能性がある。
+これは実機で入力レベル確認が必要。
+
+4. D1 SS14
+----------
+役割:
+9V入力の逆接保護用ショットキーダイオード。
+
+05基板:
+- フットプリント: MEFX:D_SMA
+- パッド寸法: 1.600mm x 1.800mm
+- CPL: X=78.000mm, Y=-10.000mm, Top, Rotation=0.0
+
+ネット:
+- Pad 1: +9V_PROT
+- Pad 2: +9V_RAW
+
+判定:
+OK。KiCad上ではPad 1をカソード側として+9V_PROTへ接続済み。
+JLCPCBプレビューでダイオードの帯マークが+9V_PROT側に来ることを確認する。
+
+5. 抵抗・コンデンサ
+-------------------
+役割:
+電源デカップリング、仮想GND、ADC入力フィルタ、DAC出力フィルタ、バイアス、ゲイン設定。
+
+BOM/フットプリント:
+- 抵抗: 0805、125mW品。信号/バイアス用途なので電力余裕あり。
+- 100nF: 0402。
+- 220pF/3.3nF: C0G/NP0系。音声フィルタ用として妥当。
+- 1uF/10uF/47uF: X5R/X7R系。電源/カップリング用途として妥当。
+
+機械チェック:
+- 0402/0805/1206のパッド寸法は一般的なJLCPCB実装範囲。
+- U4のようなパッケージ違いは検出されていない。
+
+6. 音声回路の計算確認
+---------------------
+ADC入力ローパス:
+- 2kΩ + 220pF
+- fc = 約361.7kHz
+- 可聴帯域20kHzを潰さず、高周波ノイズを落とす値。
+
+DAC出力ローパス:
+- 470Ω + 3.3nF
+- fc = 約102.6kHz
+- 可聴帯域を残し、DAC由来の高周波成分を抑える値。
+
+DAC出力DCカット:
+- 10uF + 10kΩ
+- fc = 約1.59Hz
+- ベースの低域をほぼ削らない。
+
+判定:
+OK。音声帯域として大きな破綻はない。
+
+7. 電源容量の概算
+----------------
+概算:
+- CS4270: 約50mA級
+- ESP32-S3モジュール余裕見積もり: 約350mA
+- TL072: 数mA級
+- 5V側合計目安: 約400mA
+
+部品定格:
+- R-78E5.0-1.0: 5V 1A級
+- AP2112K-3.3: 600mA級
+
+判定:
+OK。試作としては余裕あり。
+ただしESP32のWi-Fi/BLEピークやUSB給電状態で実測確認する。
+
+8. 注文前の最終目視ポイント
+----------------------------
+JLCPCBへ05をアップロードしたら、決済前に必ず確認する。
+
+1. U4の5本の足がSOT-23-5パッド中央付近に重なる。
+2. U4のPin 1マークが基板のPin 1側と合う。
+3. U2がAssembly Yesで、TSSOP-24の足が各パッドに乗る。
+4. U1の1番ピンマークが基板側と合う。
+5. D1のカソード帯が+9V_PROT側に来る。
+6. 旧04のBOM/CPLを使っていない。
+
+最終判定
+--------
+現時点の05データは再注文可能。
+前回のU4フットプリント問題は05で修正済み。
+残るリスクは、JLCPCB側の部品モデル/回転解釈と、実機到着後のアナログ音声品質。
+この2つは、JLCPCBプレビュー確認と実機測定で潰す。

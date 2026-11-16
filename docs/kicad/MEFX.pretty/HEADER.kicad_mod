@@ -1,0 +1,108 @@
+(footprint "HEADER"
+		(layer "F.Cu")
+		(uuid "05969342-20d9-4122-a6b9-8bcb2246a4c7")
+		(at 8 48)
+		(property "Reference" "J2"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "358c749f-922d-489d-a73a-b5b1b95f7fcf")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "INPUT"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "0008bfdb-6e36-44ec-ab94-ab77944775e7")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f673f15f-cc45-4701-8322-d49acfca7761")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "d6bb1e6b-af10-4616-9513-d2218c133cb9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.5 -1.5)
+			(end 4.04 4.04)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "4bb6ae4a-9480-48b6-afe3-6e5fb9d9d2dd")
+		)
+		(fp_text user "TIP"
+			(at -1.1 2 0)
+			(layer "F.Fab")
+			(uuid "3c8ea835-a4a2-4a96-a36e-f206b85679db")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(fp_text user "GND"
+			(at 1.44 2 0)
+			(layer "F.Fab")
+			(uuid "5d718ff5-fdc1-4f87-a09b-731983189681")
+			(effects
+				(font
+					(size 0.8 0.8)
+					(thickness 0.1)
+				)
+			)
+		)
+		(pad "1" thru_hole rect
+			(at 0 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "INPUT_TIP")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "99aca52d-0fe8-418e-b7c6-2896fc94fbb8")
+		)
+		(pad "2" thru_hole circle
+			(at 2.54 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "GND")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "6c81113e-0725-4723-bcfa-1af066806677")
+		)
+		(embedded_fonts no)
+	)

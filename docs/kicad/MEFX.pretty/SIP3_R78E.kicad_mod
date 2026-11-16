@@ -1,0 +1,97 @@
+(footprint "SIP3_R78E"
+		(layer "F.Cu")
+		(uuid "2bdda221-bb9e-4d29-90a8-d679bb769618")
+		(at 84 10)
+		(property "Reference" "U5"
+			(at 0 -2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "21f1e40a-ebe6-4809-b5b0-66eb7cbf7129")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "R-78E5.0-1.0"
+			(at 0 2 0)
+			(layer "F.Fab")
+			(uuid "f3fb8335-1af0-461f-bae2-5208ff6a63f7")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "71ea30e7-e5e3-4c6b-9283-c976af602fee")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "f5ceb824-4a21-4549-ac9d-29661e31a386")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -1.5 -2)
+			(end 6.6 10.5)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "a2132574-07fb-43b6-96fb-e290c4bcc4dd")
+		)
+		(pad "1" thru_hole rect
+			(at 0 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "+9V_PROT")
+			(pinfunction "1")
+			(pintype "passive")
+			(uuid "3cdff38d-979c-4d9a-987c-624fbfd95718")
+		)
+		(pad "2" thru_hole circle
+			(at 2.54 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "GND")
+			(pinfunction "2")
+			(pintype "passive")
+			(uuid "2b608619-8c71-4a6e-8a72-9c1643e6f6f0")
+		)
+		(pad "3" thru_hole circle
+			(at 5.08 0)
+			(size 1.7 1.7)
+			(drill 0.9)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "+5V")
+			(pinfunction "3")
+			(pintype "passive")
+			(uuid "6d842379-b342-4ca6-a4bf-9943761768ff")
+		)
+		(embedded_fonts no)
+	)
